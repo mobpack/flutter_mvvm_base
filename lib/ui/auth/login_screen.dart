@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/core/widgets/base_scaffold.dart';
 import 'package:flutter_mvvm_base/ui/auth/login_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +12,7 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(loginProvider);
 
-    return Scaffold(
+    return BaseScaffold(
       appBar: AppBar(
         title: const Text('Login'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -23,6 +24,8 @@ class LoginScreen extends ConsumerWidget {
             children: [
               SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -79,6 +82,7 @@ class LoginScreen extends ConsumerWidget {
                             'Password must be at least 6 characters',
                       },
                       textInputAction: TextInputAction.done,
+                      onSubmitted: (value) => _onSubmit(ref, context),
                     ),
                     const SizedBox(height: 8),
                     Row(
