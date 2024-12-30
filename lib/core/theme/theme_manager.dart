@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/core/services/storage_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ThemeManager extends ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.system;
+class ThemeManager extends StateNotifier<ThemeMode> {
+  final StorageService _storageService;
 
-  ThemeMode get themeMode => _themeMode;
+  ThemeManager({
+    required StorageService storageService,
+  })  : _storageService = storageService,
+        super(ThemeMode.system) {
+    _loadTheme();
+  }
 
-  bool get isDarkMode => _themeMode == ThemeMode.dark;
+  bool get isDarkMode => state == ThemeMode.dark;
+
+  void _loadTheme() {
+    final savedTheme = _storageService.getString(StorageService.themeKey);
+    if (savedTheme != null) {
+      state = ThemeMode.values.firstWhere(
+        (e) => e.toString() == savedTheme,
+        orElse: () => ThemeMode.system,
+      );
+    }
+  }
 
   void toggleTheme() {
-    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners();
+    state = state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    _storageService.setString(StorageService.themeKey, state.toString());
   }
 
   void setThemeMode(ThemeMode mode) {
-    _themeMode = mode;
-    notifyListeners();
+    state = mode;
+    _storageService.setString(StorageService.themeKey, state.toString());
   }
 }

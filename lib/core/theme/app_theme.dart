@@ -7,7 +7,6 @@ class AppTheme {
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(
         seedColor: Colors.deepPurple,
-        brightness: Brightness.light,
       ),
     );
   }

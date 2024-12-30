@@ -1,5 +1,8 @@
 {
   "cSpell.words": [
-    "mvvm"
-  ]
+    "mvvm",
+    "prefs",
+    "SUPABASE"
+  ],
+  "dart.flutterSdkPath": ".fvm/versions/3.27.1"
 }
