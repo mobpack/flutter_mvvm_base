@@ -51,7 +51,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
   Future<void> login() async {
     if (!state.form.valid) return;
 
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true);
 
     try {
       final values = state.form.value;

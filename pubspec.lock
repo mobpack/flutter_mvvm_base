@@ -773,6 +773,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  safe_result:
+    dependency: "direct main"
+    description:
+      name: safe_result
+      sha256: a0e0f8e99bd7f7b8a914878f78f93177e825912ba0be83a213732e0416cbf371
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   shared_preferences:
     dependency: "direct main"
     description:

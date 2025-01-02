@@ -18,7 +18,8 @@ class SupabaseService {
     final anonKey = dotenv.env['SUPABASE_ANON_KEY'];
 
     if (url == null || anonKey == null) {
-      throw Exception('Supabase URL and anonymous key must be provided in .env file');
+      throw Exception(
+          'Supabase URL and anonymous key must be provided in .env file');
     }
 
     try {
