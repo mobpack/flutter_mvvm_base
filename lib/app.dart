@@ -18,13 +18,14 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
+    final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
       title: 'Flutter MVVM Base',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      routerConfig: AppRouter.router,
+      routerConfig: router,
     );
   }
 }

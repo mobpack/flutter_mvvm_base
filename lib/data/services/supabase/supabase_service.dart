@@ -19,7 +19,8 @@ class SupabaseService {
 
     if (url == null || anonKey == null) {
       throw Exception(
-          'Supabase URL and anonymous key must be provided in .env file');
+        'Supabase URL and anonymous key must be provided in .env file',
+      );
     }
 
     try {

@@ -1,8 +1,7 @@
 import 'package:flutter_mvvm_base/core/services/log_service.dart';
 import 'package:flutter_mvvm_base/core/services/storage_service.dart';
-import 'package:flutter_mvvm_base/data/repository/auth/auth_repository_interface.dart';
-import 'package:flutter_mvvm_base/data/repository/auth/offline_auth_repository.dart';
-import 'package:flutter_mvvm_base/data/repository/auth/online_auth_repository.dart';
+import 'package:flutter_mvvm_base/data/repositories/auth/auth_repository.dart';
+import 'package:flutter_mvvm_base/data/repositories/auth/auth_repository_impl.dart';
 import 'package:flutter_mvvm_base/data/services/supabase/auth/auth_interface.dart';
 import 'package:flutter_mvvm_base/data/services/supabase/auth/auth_service.dart';
 import 'package:flutter_mvvm_base/data/services/supabase/supabase_service.dart';
@@ -38,17 +37,9 @@ Future<void> setupServiceLocator() async {
 
   // Register Auth Repositories
   getIt.registerLazySingleton<AuthRepository>(
-    () => OnlineAuthRepository(
+    () => AuthRepositoryImpl(
       authService: getIt<AuthService>(),
     ),
-    instanceName: 'online',
-  );
-
-  getIt.registerLazySingleton<AuthRepository>(
-    () => OfflineAuthRepository(
-      storageService: getIt<StorageService>(),
-    ),
-    instanceName: 'offline',
   );
 
   // Wait for async singletons to be ready

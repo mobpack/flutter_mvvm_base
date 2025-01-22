@@ -2,7 +2,8 @@
   "cSpell.words": [
     "mvvm",
     "prefs",
-    "SUPABASE"
+    "SUPABASE",
+    "viewmodel"
   ],
   "dart.flutterSdkPath": ".fvm/versions/3.27.1"
 }

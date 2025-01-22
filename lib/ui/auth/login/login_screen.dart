@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/core/widgets/base_scaffold.dart';
-import 'package:flutter_mvvm_base/ui/auth/login_state.dart';
+import 'package:flutter_mvvm_base/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -10,7 +10,21 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(loginProvider);
+    final state = ref.watch(loginViewModelProvider());
+    final viewModel = ref.read(loginViewModelProvider().notifier);
+    // Redirect to home if already authenticated
+    if (state.user != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/');
+      });
+    }
+
+    // Handle navigation to register
+    if (viewModel.shouldNavigateToRegister) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/register');
+      });
+    }
 
     return BaseScaffold(
       appBar: AppBar(
@@ -19,7 +33,7 @@ class LoginScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: ReactiveForm(
-          formGroup: state.form,
+          formGroup: viewModel.form,
           child: Stack(
             children: [
               SingleChildScrollView(
@@ -45,7 +59,7 @@ class LoginScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          state.error!,
+                          state.error!.message,
                           style: TextStyle(
                             color:
                                 Theme.of(context).colorScheme.onErrorContainer,
@@ -82,16 +96,12 @@ class LoginScreen extends ConsumerWidget {
                             'Password must be at least 6 characters',
                       },
                       textInputAction: TextInputAction.done,
-                      onSubmitted: (value) => _onSubmit(ref, context),
+                      onSubmitted: (_) => _onSubmit(viewModel, context),
                     ),
                     const SizedBox(height: 8),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        ReactiveCheckbox(
-                          formControlName: 'rememberMe',
-                        ),
-                        const Text('Remember me'),
-                        const Spacer(),
                         TextButton(
                           onPressed: () {
                             // TODO: Implement forgot password
@@ -106,7 +116,7 @@ class LoginScreen extends ConsumerWidget {
                         return FilledButton(
                           onPressed: state.isLoading || !form.valid
                               ? null
-                              : () => _onSubmit(ref, context),
+                              : () => _onSubmit(viewModel, context),
                           child: Padding(
                             padding: const EdgeInsets.all(16),
                             child: state.isLoading
@@ -145,13 +155,8 @@ class LoginScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _onSubmit(WidgetRef ref, BuildContext context) async {
-    await ref.read(loginProvider.notifier).login();
+  Future<void> _onSubmit(LoginViewModel viewModel, BuildContext context) async {
+    await viewModel.login();
     if (!context.mounted) return;
-
-    // Navigate to home on success
-    if (ref.read(loginProvider).error == null) {
-      context.go('/');
-    }
   }
 }
