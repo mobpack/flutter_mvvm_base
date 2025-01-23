@@ -6,7 +6,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 
 final registerViewModelProvider =
     StateNotifierProvider.autoDispose<RegisterViewModel, RegisterState>((ref) {
-  return RegisterViewModel(RegisterUseCase());
+  return RegisterViewModel();
 });
 
 class RegisterState {
@@ -36,7 +36,9 @@ class RegisterState {
 class RegisterViewModel extends StateNotifier<RegisterState> {
   final RegisterUseCase _registerUseCase;
 
-  RegisterViewModel(this._registerUseCase) : super(RegisterState()) {
+  RegisterViewModel({RegisterUseCase? registerUseCase})
+      : _registerUseCase = registerUseCase ?? RegisterUseCase(),
+        super(RegisterState()) {
     _initForm();
   }
 

@@ -1,6 +1,7 @@
+import 'package:flutter_mvvm_base/core/di/service_locator.dart';
 import 'package:flutter_mvvm_base/core/providers/auth_provider.dart';
 import 'package:flutter_mvvm_base/domain/usecases/auth/login_usecase.dart';
-import 'package:flutter_mvvm_base/ui/auth/login/states/login_state.dart';
+import 'package:flutter_mvvm_base/ui/auth/login/state/login_state.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,9 +12,11 @@ class LoginViewModel extends _$LoginViewModel {
   late final FormGroup form;
   late final LoginUseCase _loginUseCase;
 
+  LoginViewModel({LoginUseCase? loginUseCase})
+      : _loginUseCase = loginUseCase ?? getIt<LoginUseCase>();
+
   @override
-  LoginState build({LoginUseCase? loginUseCase}) {
-    _loginUseCase = loginUseCase ?? LoginUseCase();
+  LoginState build() {
     _initForm();
     return const LoginState();
   }
@@ -73,7 +76,4 @@ class LoginViewModel extends _$LoginViewModel {
   }
 
   bool get isLoggedIn => state.user != null;
-
-  bool get shouldNavigateToRegister =>
-      state.error?.errorCode == 'invalid_credentials';
 }

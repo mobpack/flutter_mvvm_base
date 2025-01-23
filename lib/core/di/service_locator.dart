@@ -1,10 +1,6 @@
+import 'package:flutter_mvvm_base/core/di/modules/auth_module.dart';
+import 'package:flutter_mvvm_base/core/di/modules/service_module.dart';
 import 'package:flutter_mvvm_base/core/services/log_service.dart';
-import 'package:flutter_mvvm_base/core/services/storage_service.dart';
-import 'package:flutter_mvvm_base/data/repositories/auth/auth_repository.dart';
-import 'package:flutter_mvvm_base/data/repositories/auth/auth_repository_impl.dart';
-import 'package:flutter_mvvm_base/data/services/supabase/auth/auth_interface.dart';
-import 'package:flutter_mvvm_base/data/services/supabase/auth/auth_service.dart';
-import 'package:flutter_mvvm_base/data/services/supabase/supabase_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,32 +11,19 @@ Future<void> setupServiceLocator() async {
   log.init();
   log.info('Setting up service locator...');
 
-  // Services
+  // Get SharedPreferences instance
   final prefs = await SharedPreferences.getInstance();
-  getIt.registerSingleton<StorageService>(
-    StorageService(prefs),
-  );
 
-  // Register Supabase as async singleton
-  getIt.registerSingletonAsync<SupabaseService>(() async {
-    final service = SupabaseService();
-    await service.init();
-    return service;
-  });
+  // Register modules
+  final modules = [
+    ServiceModule(getIt, prefs),
+    AuthModule(getIt),
+  ];
 
-  // Register AuthService as lazy singleton
-  getIt.registerLazySingleton<AuthService>(
-    () => SupabaseAuthService(
-      client: getIt<SupabaseService>().client,
-    ),
-  );
-
-  // Register Auth Repositories
-  getIt.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(
-      authService: getIt<AuthService>(),
-    ),
-  );
+  // Initialize all modules
+  for (final module in modules) {
+    module.register();
+  }
 
   // Wait for async singletons to be ready
   await getIt.allReady();

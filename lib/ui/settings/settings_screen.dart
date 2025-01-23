@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/app.dart';
-import 'package:flutter_mvvm_base/ui/settings/view_models/settings_viewmodel.dart';
+import 'package:flutter_mvvm_base/ui/settings/view_model/settings_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -15,7 +15,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
     final packageInfo = ref.watch(packageInfoProvider);
-    final isLoggingOut = ref.watch(settingsViewModelProvider);
+    final settingViewModel = ref.watch(settingsViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -54,10 +54,10 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             subtitle: const Text('Sign out of your account'),
-            onTap: isLoggingOut
+            onTap: settingViewModel.isLoading
                 ? null
                 : () => ref.read(settingsViewModelProvider.notifier).logout(),
-            trailing: isLoggingOut
+            trailing: settingViewModel.isLoading
                 ? const SizedBox(
                     width: 20,
                     height: 20,
@@ -84,7 +84,9 @@ class SettingsScreen extends ConsumerWidget {
                 title: const Text('System'),
                 leading: const Icon(Icons.brightness_auto),
                 onTap: () {
-                  ref.read(themeProvider.notifier).setThemeMode(ThemeMode.system);
+                  ref
+                      .read(themeProvider.notifier)
+                      .setThemeMode(ThemeMode.system);
                   Navigator.pop(context);
                 },
               ),
@@ -92,7 +94,9 @@ class SettingsScreen extends ConsumerWidget {
                 title: const Text('Light'),
                 leading: const Icon(Icons.light_mode),
                 onTap: () {
-                  ref.read(themeProvider.notifier).setThemeMode(ThemeMode.light);
+                  ref
+                      .read(themeProvider.notifier)
+                      .setThemeMode(ThemeMode.light);
                   Navigator.pop(context);
                 },
               ),

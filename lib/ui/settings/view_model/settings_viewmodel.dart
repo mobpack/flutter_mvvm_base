@@ -1,5 +1,7 @@
+import 'package:flutter_mvvm_base/core/di/service_locator.dart';
 import 'package:flutter_mvvm_base/core/providers/auth_provider.dart';
 import 'package:flutter_mvvm_base/domain/usecases/auth/logout_usecase.dart';
+import 'package:flutter_mvvm_base/ui/settings/state/settings_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'settings_viewmodel.g.dart';
@@ -8,18 +10,21 @@ part 'settings_viewmodel.g.dart';
 class SettingsViewModel extends _$SettingsViewModel {
   late final LogoutUseCase _logoutUseCase;
 
+  SettingsViewModel({
+    LogoutUseCase? logoutUseCase,
+  }) : _logoutUseCase = logoutUseCase ?? getIt<LogoutUseCase>();
+
   @override
-  bool build() {
-    _logoutUseCase = LogoutUseCase();
-    return false; // isLoading state
+  SettingsState build() {
+    return const SettingsState();
   }
 
   Future<void> logout() async {
-    if (state) return; // prevent multiple calls while loading
+    if (state.isLoading) return; // prevent multiple calls while loading
 
-    state = true; // start loading
+    state = state.copyWith(isLoading: true);
     final result = await _logoutUseCase.execute();
-    
+
     result.when(
       ok: (_) {
         // Refresh auth state to trigger router redirect
@@ -27,7 +32,7 @@ class SettingsViewModel extends _$SettingsViewModel {
       },
       error: (_) {
         // Handle error if needed
-        state = false;
+        state = state.copyWith(isLoading: false);
       },
     );
   }

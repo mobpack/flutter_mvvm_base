@@ -28,27 +28,27 @@ class RouterNotifier extends ChangeNotifier {
   }
 
   String? _redirect(BuildContext context, GoRouterState state) {
-    final user = _ref.read(authProvider).valueOrNull;
+    final authState = _ref.read(authProvider);
+    final user = authState.valueOrNull;
     final isAuth = user != null;
+    final isLoading = authState.isLoading;
 
     final isSplash = state.matchedLocation == '/splash';
     final isLoggingIn = state.matchedLocation == '/login';
     final isRegistering = state.matchedLocation == '/register';
 
-    // Handle loading state
-    if (isSplash) {
-      if (_ref.read(authProvider).isLoading) {
-        return null; // Stay on splash while loading
-      }
+    if (isLoading) {
+      return '/splash';
+    }
+
+    if (isSplash && !isLoading) {
       return isAuth ? '/' : '/login';
     }
 
-    // If not logged in, redirect to login screen
     if (!isAuth && !isLoggingIn && !isRegistering) {
       return '/login';
     }
 
-    // If logged in and on auth screen, redirect to home
     if (isAuth && (isLoggingIn || isRegistering)) {
       return '/';
     }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/core/widgets/base_scaffold.dart';
-import 'package:flutter_mvvm_base/ui/auth/login/view_models/login_viewmodel.dart';
+import 'package:flutter_mvvm_base/ui/auth/login/view_model/login_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -10,19 +10,12 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(loginViewModelProvider());
-    final viewModel = ref.read(loginViewModelProvider().notifier);
+    final state = ref.watch(loginViewModelProvider);
+    final viewModel = ref.read(loginViewModelProvider.notifier);
     // Redirect to home if already authenticated
     if (state.user != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         context.go('/');
-      });
-    }
-
-    // Handle navigation to register
-    if (viewModel.shouldNavigateToRegister) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.go('/register');
       });
     }
 
@@ -139,7 +132,7 @@ class LoginScreen extends ConsumerWidget {
                         const Text("Don't have an account?"),
                         TextButton(
                           onPressed: () {
-                            // TODO: Navigate to sign up
+                            context.push('/register');
                           },
                           child: const Text('Sign Up'),
                         ),
