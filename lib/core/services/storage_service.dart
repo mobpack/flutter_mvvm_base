@@ -8,9 +8,7 @@ class StorageService {
 
   StorageService(this._prefs)
       : _secureStorage = const FlutterSecureStorage(
-          aOptions: AndroidOptions(
-            encryptedSharedPreferences: true,
-          ),
+          aOptions: AndroidOptions(),
         );
 
   // Regular Storage Methods
