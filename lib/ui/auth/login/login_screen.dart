@@ -151,10 +151,6 @@ class LoginScreen extends ConsumerWidget {
                                 filled: true,
                                 fillColor:
                                     Theme.of(context).colorScheme.surface,
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 16.w,
-                                  vertical: 16.h,
-                                ),
                               ),
                               validationMessages: {
                                 ValidationMessage.required: (_) =>
