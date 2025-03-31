@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 class AppTextTheme {
   static double _getAdaptiveFontSize(BuildContext context, double size) {
-    if (ResponsiveBreakpoints.of(context).isDesktop) {
-      return size * 0.3; // 20% smaller for desktop
-    } else if (ResponsiveBreakpoints.of(context).isTablet) {
-      return size * 0.9; // 10% smaller for tablet
-    }
     return size; // Original size for mobile
   }
 
@@ -16,71 +9,71 @@ class AppTextTheme {
     return TextTheme(
       // Display styles
       displayLarge: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 40).sp,
+        fontSize: _getAdaptiveFontSize(context, 40),
         fontWeight: FontWeight.normal,
       ),
       displayMedium: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 32).sp,
+        fontSize: _getAdaptiveFontSize(context, 32),
         fontWeight: FontWeight.normal,
       ),
       displaySmall: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 28).sp,
+        fontSize: _getAdaptiveFontSize(context, 28),
         fontWeight: FontWeight.normal,
       ),
 
       // Headline styles
       headlineLarge: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 24).sp,
+        fontSize: _getAdaptiveFontSize(context, 24),
         fontWeight: FontWeight.w600,
       ),
       headlineMedium: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 20).sp,
+        fontSize: _getAdaptiveFontSize(context, 20),
         fontWeight: FontWeight.w600,
       ),
       headlineSmall: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 18).sp,
+        fontSize: _getAdaptiveFontSize(context, 18),
         fontWeight: FontWeight.w600,
       ),
 
       // Title styles
       titleLarge: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 16).sp,
+        fontSize: _getAdaptiveFontSize(context, 16),
         fontWeight: FontWeight.w500,
       ),
       titleMedium: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 14).sp,
+        fontSize: _getAdaptiveFontSize(context, 14),
         fontWeight: FontWeight.w500,
       ),
       titleSmall: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 12).sp,
+        fontSize: _getAdaptiveFontSize(context, 12),
         fontWeight: FontWeight.w500,
       ),
 
       // Label styles
       labelLarge: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 14).sp,
+        fontSize: _getAdaptiveFontSize(context, 14),
         fontWeight: FontWeight.w500,
       ),
       labelMedium: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 12).sp,
+        fontSize: _getAdaptiveFontSize(context, 12),
         fontWeight: FontWeight.w500,
       ),
       labelSmall: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 10).sp,
+        fontSize: _getAdaptiveFontSize(context, 10),
         fontWeight: FontWeight.w500,
       ),
 
       // Body styles
       bodyLarge: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 16).sp,
+        fontSize: _getAdaptiveFontSize(context, 16),
         fontWeight: FontWeight.normal,
       ),
       bodyMedium: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 14).sp,
+        fontSize: _getAdaptiveFontSize(context, 14),
         fontWeight: FontWeight.normal,
       ),
       bodySmall: TextStyle(
-        fontSize: _getAdaptiveFontSize(context, 12).sp,
+        fontSize: _getAdaptiveFontSize(context, 12),
         fontWeight: FontWeight.normal,
       ),
     );
