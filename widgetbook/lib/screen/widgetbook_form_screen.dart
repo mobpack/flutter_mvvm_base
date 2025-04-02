@@ -4,6 +4,7 @@ import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/example_form_scre
 import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_field_model.dart';
 import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_schema_model.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
+import 'package:logger/logger.dart';
 
 /// Helper method to get an example form schema
 FormSchemaModel _getExampleFormSchema() {
@@ -62,7 +63,7 @@ Widget buildWidgetbookFormUseCase(BuildContext context) {
       schema: _getExampleFormSchema(),
       onSubmit: (formData) {
         // Handle form submission
-        print('Form submitted with data: $formData');
+        Logger().d('Form submitted with data: $formData');
 
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
@@ -74,7 +75,7 @@ Widget buildWidgetbookFormUseCase(BuildContext context) {
       },
       onFieldValueChanged: (fieldId, value) {
         // Handle field value changes if needed
-        print('Field $fieldId changed to: $value');
+        Logger().d('Field $fieldId changed to: $value');
       },
       headerBuilder: (context, schema) {
         return const Padding(

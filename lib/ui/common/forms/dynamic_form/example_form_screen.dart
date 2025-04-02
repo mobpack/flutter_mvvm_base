@@ -4,6 +4,7 @@ import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/dynamic_form_buil
 import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_field_model.dart';
 import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_schema_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 
 /// Example provider for form schema
 final formSchemaProvider =
@@ -43,7 +44,7 @@ class ExampleFormScreen extends ConsumerWidget {
                   schema: schema,
                   onSubmit: (formData) {
                     // Handle form submission
-                    print('Form submitted with data: $formData');
+                    Logger().d('Form submitted with data: $formData');
 
                     // Show success message
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -55,7 +56,7 @@ class ExampleFormScreen extends ConsumerWidget {
                   },
                   onFieldValueChanged: (fieldId, value) {
                     // Handle field value changes if needed
-                    print('Field $fieldId changed to: $value');
+                    Logger().d('Field $fieldId changed to: $value');
                   },
                   headerBuilder: (context, schema) {
                     return const Padding(

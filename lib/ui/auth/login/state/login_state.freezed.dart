@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LoginState {
   bool get isLoading;
-  User? get user;
+  UserEntity? get user;
   AppError? get error;
 
   /// Create a copy of LoginState
@@ -52,7 +52,9 @@ abstract mixin class $LoginStateCopyWith<$Res> {
           LoginState value, $Res Function(LoginState) _then) =
       _$LoginStateCopyWithImpl;
   @useResult
-  $Res call({bool isLoading, User? user, AppError? error});
+  $Res call({bool isLoading, UserEntity? user, AppError? error});
+
+  $UserEntityCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -79,12 +81,26 @@ class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
       user: freezed == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
-              as User?,
+              as UserEntity?,
       error: freezed == error
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as AppError?,
     ));
+  }
+
+  /// Create a copy of LoginState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserEntityCopyWith<$Res>? get user {
+    if (_self.user == null) {
+      return null;
+    }
+
+    return $UserEntityCopyWith<$Res>(_self.user!, (value) {
+      return _then(_self.copyWith(user: value));
+    });
   }
 }
 
@@ -97,7 +113,7 @@ class _LoginState implements LoginState {
   @JsonKey()
   final bool isLoading;
   @override
-  final User? user;
+  final UserEntity? user;
   @override
   final AppError? error;
 
@@ -137,7 +153,10 @@ abstract mixin class _$LoginStateCopyWith<$Res>
       __$LoginStateCopyWithImpl;
   @override
   @useResult
-  $Res call({bool isLoading, User? user, AppError? error});
+  $Res call({bool isLoading, UserEntity? user, AppError? error});
+
+  @override
+  $UserEntityCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -164,12 +183,26 @@ class __$LoginStateCopyWithImpl<$Res> implements _$LoginStateCopyWith<$Res> {
       user: freezed == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
-              as User?,
+              as UserEntity?,
       error: freezed == error
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
               as AppError?,
     ));
+  }
+
+  /// Create a copy of LoginState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserEntityCopyWith<$Res>? get user {
+    if (_self.user == null) {
+      return null;
+    }
+
+    return $UserEntityCopyWith<$Res>(_self.user!, (value) {
+      return _then(_self.copyWith(user: value));
+    });
   }
 }
 

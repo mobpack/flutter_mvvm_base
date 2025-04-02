@@ -1,5 +1,5 @@
 import 'package:flutter_mvvm_base/domain/entities/common/app_error.dart';
-import 'package:flutter_mvvm_base/domain/entities/user/user.dart';
+import 'package:flutter_mvvm_base/domain/entities/user/user_entity.dart';
 import 'package:flutter_mvvm_base/domain/usecases/auth/register_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -12,7 +12,7 @@ final registerViewModelProvider =
 class RegisterState {
   final bool isLoading;
   final AppError? error;
-  final User? user;
+  final UserEntity? user;
 
   RegisterState({
     this.isLoading = false,
@@ -23,7 +23,7 @@ class RegisterState {
   RegisterState copyWith({
     bool? isLoading,
     AppError? error,
-    User? user,
+    UserEntity? user,
   }) {
     return RegisterState(
       isLoading: isLoading ?? this.isLoading,

@@ -1,7 +1,7 @@
 import 'package:flutter_mvvm_base/core/di/service_locator.dart';
 import 'package:flutter_mvvm_base/data/repositories/auth/auth_repository.dart';
 import 'package:flutter_mvvm_base/domain/entities/common/app_error.dart';
-import 'package:flutter_mvvm_base/domain/entities/user/user.dart';
+import 'package:flutter_mvvm_base/domain/entities/user/user_entity.dart';
 import 'package:flutter_mvvm_base/domain/mappers/error_mapper.dart';
 import 'package:safe_result/safe_result.dart';
 
@@ -11,7 +11,8 @@ class RegisterUseCase {
   RegisterUseCase({AuthRepository? authRepository})
       : _authRepository = authRepository ?? getIt<AuthRepository>();
 
-  Future<Result<User, AppError>> execute(String email, String password) async {
+  Future<Result<UserEntity, AppError>> execute(
+      String email, String password,) async {
     final result = await _authRepository.signUpWithPassword(
       email: email,
       password: password,
@@ -24,7 +25,10 @@ class RegisterUseCase {
           );
         }
         return Result.ok(
-          User(id: response.user!.id, email: response.user!.email),
+          UserEntity(
+            id: response.user!.id, 
+            email: response.user!.email ?? '',
+          ),
         );
       },
       onError: (error) => Result.error(ErrorMapper.mapError(error)),
