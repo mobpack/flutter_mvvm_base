@@ -7,10 +7,7 @@ part 'user_entity.g.dart';
 ///
 /// The class uses freezed for immutability and JSON serialization/deserialization
 @freezed
-abstract class UserEntity implements _$UserEntity {
-  const UserEntity._(); // Private constructor for adding methods to the class
-
-  /// Default constructor with named parameters
+abstract class UserEntity with _$UserEntity {
   const factory UserEntity({
     /// Unique identifier for the user (UUID in PostgreSQL)
     required String id,
@@ -44,25 +41,28 @@ abstract class UserEntity implements _$UserEntity {
   factory UserEntity.fromJson(Map<String, dynamic> json) =>
       _$UserEntityFromJson(json);
 
-  /// Merges this UserEntity with data from Supabase
+  /// Factory method to merge UserEntity with data from Supabase
   ///
   /// This method is used to update the UserEntity with fresh data from the database
   /// while preserving any local-only fields that might not be in the database
-  UserEntity mergeWithSupabaseData(Map<String, dynamic> userData) {
-    return copyWith(
-      id: userData['id']?.toString() ?? id,
-      email: userData['email']?.toString() ?? email,
-      role: userData['role']?.toString() ?? role,
+  factory UserEntity.mergeWithSupabaseData(
+    UserEntity user,
+    Map<String, dynamic> userData,
+  ) {
+    return user.copyWith(
+      id: userData['id']?.toString() ?? user.id,
+      email: userData['email']?.toString() ?? user.email,
+      role: userData['role']?.toString() ?? user.role,
       avatar: userData['avatar']?.toString(),
-      language: userData['language']?.toString() ?? language,
+      language: userData['language']?.toString() ?? user.language,
       onboardingCompleted:
-          userData['onboarding_completed'] as bool? ?? onboardingCompleted,
+          userData['onboarding_completed'] as bool? ?? user.onboardingCompleted,
       createdAt: userData['created_at'] != null
           ? DateTime.parse(userData['created_at'].toString())
-          : createdAt,
+          : user.createdAt,
       updatedAt: userData['updated_at'] != null
           ? DateTime.parse(userData['updated_at'].toString())
-          : updatedAt,
+          : user.updatedAt,
     );
   }
 }

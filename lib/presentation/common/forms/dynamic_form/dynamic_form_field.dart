@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_field_model.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/form_field_model.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 /// Widget that renders a form field based on its type and configuration

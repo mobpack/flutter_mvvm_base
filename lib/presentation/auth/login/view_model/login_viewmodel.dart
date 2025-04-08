@@ -1,7 +1,7 @@
 import 'package:flutter_mvvm_base/core/di/service_locator.dart';
 import 'package:flutter_mvvm_base/core/providers/auth_provider.dart';
 import 'package:flutter_mvvm_base/domain/usecases/auth/login_usecase.dart';
-import 'package:flutter_mvvm_base/ui/auth/login/state/login_state.dart';
+import 'package:flutter_mvvm_base/presentation/auth/login/state/login_state.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

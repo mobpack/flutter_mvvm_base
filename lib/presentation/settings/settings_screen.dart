@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/app.dart';
-import 'package:flutter_mvvm_base/ui/settings/view_model/settings_viewmodel.dart';
+import 'package:flutter_mvvm_base/presentation/settings/view_model/settings_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

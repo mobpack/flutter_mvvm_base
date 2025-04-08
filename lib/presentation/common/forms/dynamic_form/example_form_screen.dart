@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/core/widgets/base_scaffold.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/dynamic_form_builder.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_field_model.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_schema_model.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/dynamic_form_builder.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/form_field_model.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/form_schema_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 

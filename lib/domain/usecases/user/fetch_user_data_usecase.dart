@@ -17,10 +17,10 @@ class FetchUserDataUseCase {
   ///
   /// This is typically called after a successful login to ensure the app
   /// has the most up-to-date user information from the database
-  Future<Result<UserEntity, AppError>> execute(UserEntity currentUser) async {
+  Future<Result<UserEntity, AppError>> execute(String userId) async {
     try {
       // Fetch the latest user data from the repository
-      final result = await _userRepository.getUserById(currentUser.id);
+      final result = await _userRepository.getUserById(userId);
 
       return result.fold(
         onOk: (updatedUser) {

@@ -1,6 +1,6 @@
 import 'package:flutter_mvvm_base/core/services/log_service.dart';
 import 'package:flutter_mvvm_base/data/services/supabase/supabase_service.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_schema_model.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/form_schema_model.dart';
 import 'package:safe_result/safe_result.dart';
 
 /// Service responsible for fetching and managing form schemas from Supabase

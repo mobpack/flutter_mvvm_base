@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/dynamic_form_builder.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/example_form_screen.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_field_model.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_schema_model.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/dynamic_form_builder.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/example_form_screen.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/form_field_model.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/form_schema_model.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 import 'package:logger/logger.dart';
 

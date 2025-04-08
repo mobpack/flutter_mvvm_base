@@ -156,7 +156,7 @@ class _$UserEntityCopyWithImpl<$Res> implements $UserEntityCopyWith<$Res> {
 
 /// @nodoc
 @JsonSerializable()
-class _UserEntity extends UserEntity {
+class _UserEntity implements UserEntity {
   const _UserEntity(
       {required this.id,
       required this.email,
@@ -165,8 +165,7 @@ class _UserEntity extends UserEntity {
       this.language = 'en',
       this.onboardingCompleted = false,
       this.createdAt,
-      this.updatedAt})
-      : super._();
+      this.updatedAt});
   factory _UserEntity.fromJson(Map<String, dynamic> json) =>
       _$UserEntityFromJson(json);
 

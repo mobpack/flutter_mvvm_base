@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/core/providers/auth_provider.dart';
-import 'package:flutter_mvvm_base/presentation/screens/user/user_profile_screen.dart';
-import 'package:flutter_mvvm_base/ui/auth/login/login_screen.dart';
-import 'package:flutter_mvvm_base/ui/auth/register/register_screen.dart';
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/example_form_screen.dart';
-import 'package:flutter_mvvm_base/ui/home/my_home_page.dart';
-import 'package:flutter_mvvm_base/ui/settings/settings_screen.dart';
-import 'package:flutter_mvvm_base/ui/splash/splash_screen.dart';
+import 'package:flutter_mvvm_base/presentation/auth/login/login_screen.dart';
+import 'package:flutter_mvvm_base/presentation/auth/register/register_screen.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/example_form_screen.dart';
+import 'package:flutter_mvvm_base/presentation/home/my_home_page.dart';
+import 'package:flutter_mvvm_base/presentation/settings/settings_screen.dart';
+import 'package:flutter_mvvm_base/presentation/splash/splash_screen.dart';
+import 'package:flutter_mvvm_base/presentation/user/user_profile_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 

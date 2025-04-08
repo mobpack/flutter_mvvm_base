@@ -29,7 +29,9 @@ class EnhancedLoginUseCase {
   ///
   /// Using dartz for the complex nested error handling case
   Future<Result<UserEntity, AppError>> execute(
-      String email, String password,) async {
+    String email,
+    String password,
+  ) async {
     try {
       // Step 1: Authenticate the user and handle with dartz
       final Either<AppError, UserEntity> result =
@@ -77,7 +79,7 @@ class EnhancedLoginUseCase {
 
     // Step 3: Fetch additional user data from Supabase
     try {
-      final userDataResult = await _fetchUserDataUseCase.execute(basicUser);
+      final userDataResult = await _fetchUserDataUseCase.execute(basicUser.id);
 
       if (userDataResult.isOk) {
         // Return the complete user with all data from the database

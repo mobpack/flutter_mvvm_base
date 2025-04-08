@@ -1,4 +1,4 @@
-import 'package:flutter_mvvm_base/ui/common/forms/dynamic_form/form_field_model.dart';
+import 'package:flutter_mvvm_base/presentation/common/forms/dynamic_form/form_field_model.dart';
 
 /// Model class representing the entire form schema
 class FormSchemaModel {
