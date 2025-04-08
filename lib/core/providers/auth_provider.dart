@@ -1,5 +1,5 @@
 import 'package:flutter_mvvm_base/core/di/service_locator.dart';
-import 'package:flutter_mvvm_base/domain/entities/user/user.dart';
+import 'package:flutter_mvvm_base/domain/entities/user/user_entity.dart';
 import 'package:flutter_mvvm_base/domain/usecases/auth/get_current_user_usecase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -12,7 +12,7 @@ class Auth extends _$Auth {
   Auth() : _getCurrentUserUseCase = getIt<GetCurrentUserUseCase>();
 
   @override
-  Future<User?> build() async {
+  Future<UserEntity?> build() async {
     final result = await _getCurrentUserUseCase.execute();
     await Future.delayed(const Duration(seconds: 1));
     return result.when(

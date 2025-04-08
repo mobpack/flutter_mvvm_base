@@ -3,13 +3,10 @@ import 'package:flutter_mvvm_base/core/services/log_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {
-  static final SupabaseService _instance = SupabaseService._internal();
-  factory SupabaseService() => _instance;
-
   late final SupabaseClient _client;
   bool _initialized = false;
 
-  SupabaseService._internal();
+  SupabaseService();
 
   Future<void> init() async {
     if (_initialized) return;

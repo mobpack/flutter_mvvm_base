@@ -4,6 +4,7 @@ import 'package:flutter_mvvm_base/data/services/supabase/auth/auth_interface.dar
 import 'package:flutter_mvvm_base/data/services/supabase/auth/auth_service.dart';
 import 'package:flutter_mvvm_base/data/services/supabase/supabase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ServiceModule extends DIModule {
   final SharedPreferences prefs;
@@ -29,6 +30,11 @@ class ServiceModule extends DIModule {
       await service.init();
       return service;
     });
+
+    // Register SupabaseClient as a factory that gets the client from SupabaseService
+    getIt.registerFactory<SupabaseClient>(
+      () => getIt<SupabaseService>().client,
+    );
 
     // Register AuthService as lazy singleton
     getIt.registerLazySingleton<AuthService>(
