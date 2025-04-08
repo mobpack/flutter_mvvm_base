@@ -5,14 +5,14 @@ import 'package:flutter_mvvm_base/presentation/auth/login/state/login_state.dart
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'login_viewmodel.g.dart';
+part 'login_provider.g.dart';
 
 @riverpod
-class LoginViewModel extends _$LoginViewModel {
+class Login extends _$Login {
   late final FormGroup form;
   late final LoginUseCase _loginUseCase;
 
-  LoginViewModel({LoginUseCase? loginUseCase})
+  Login({LoginUseCase? loginUseCase})
       : _loginUseCase = loginUseCase ?? getIt<LoginUseCase>();
 
   @override
