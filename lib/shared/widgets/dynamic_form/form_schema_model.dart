@@ -1,4 +1,4 @@
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_field_model.dart';
+import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_section_model.dart';
 
 /// Model class representing the entire form schema
 class FormSchemaModel {
@@ -11,8 +11,8 @@ class FormSchemaModel {
   /// Optional description of the form
   final String? description;
 
-  /// List of form fields
-  final List<FormFieldModel> fields;
+  /// List of form sections (each with its own fields)
+  final List<FormSectionModel> sections;
 
   /// Optional submission endpoint
   final String? submitEndpoint;
@@ -23,7 +23,7 @@ class FormSchemaModel {
   const FormSchemaModel({
     required this.id,
     required this.title,
-    required this.fields,
+    required this.sections,
     this.description,
     this.submitEndpoint,
     this.properties,
@@ -35,10 +35,10 @@ class FormSchemaModel {
       id: json['id'] as String,
       title: json['title'] as String,
       description: json['description'] as String?,
-      fields: (json['fields'] as List<dynamic>)
+      sections: (json['sections'] as List<dynamic>)
           .map(
-            (fieldJson) =>
-                FormFieldModel.fromJson(fieldJson as Map<String, dynamic>),
+            (sectionJson) =>
+                FormSectionModel.fromJson(sectionJson as Map<String, dynamic>),
           )
           .toList(),
       submitEndpoint: json['submitEndpoint'] as String?,
@@ -52,7 +52,7 @@ class FormSchemaModel {
       'id': id,
       'title': title,
       if (description != null) 'description': description,
-      'fields': fields.map((field) => field.toJson()).toList(),
+      'sections': sections.map((section) => section.toJson()).toList(),
       if (submitEndpoint != null) 'submitEndpoint': submitEndpoint,
       if (properties != null) 'properties': properties,
     };

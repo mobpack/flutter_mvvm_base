@@ -52,7 +52,7 @@ class DynamicFormBuilder extends StatefulWidget {
 
 class _DynamicFormBuilderState extends State<DynamicFormBuilder> {
   /// The reactive form group that will hold all form controls
-  late final FormGroup _form;
+  late FormGroup _form;
 
   @override
   void initState() {
@@ -65,70 +65,78 @@ class _DynamicFormBuilderState extends State<DynamicFormBuilder> {
     final controls = <String, AbstractControl<dynamic>>{};
 
     // Create a form control for each field in the schema
-    for (final field in widget.schema.fields) {
-      // Create validation rules based on field configuration
-      final validations = <Validator<dynamic>>[];
+    // Loop through all fields in all sections
+    for (final section in widget.schema.sections) {
+      for (final field in section.fields) {
+        // Create validation rules based on field configuration
+        final validations = <Validator<dynamic>>[];
 
-      // Add required validation if field is required
-      if (field.isRequired) {
-        validations.add(Validators.required);
+        // Add required validation if field is required
+        if (field.isRequired) {
+          validations.add(Validators.required);
+        }
+
+        // Add additional validations based on field type and validation rules
+        if (field.type == FormFieldType.email) {
+          validations.add(Validators.email);
+        } else if (field.type == FormFieldType.number) {
+          validations.add(Validators.number());
+        }
+
+        // Add min length validation if specified
+        if (field.validationRules != null &&
+            field.validationRules!.containsKey('minLength')) {
+          final minLength = field.validationRules!['minLength'] as int;
+          validations.add(Validators.minLength(minLength));
+        }
+
+        // Add max length validation if specified
+        if (field.validationRules != null &&
+            field.validationRules!.containsKey('maxLength')) {
+          final maxLength = field.validationRules!['maxLength'] as int;
+          validations.add(Validators.maxLength(maxLength));
+        }
+
+        // Add pattern validation if specified
+        if (field.validationRules != null &&
+            field.validationRules!.containsKey('pattern')) {
+          final pattern = field.validationRules!['pattern'] as String;
+          validations.add(Validators.pattern(pattern));
+        }
+
+        // Get initial value for this field (if provided)
+        final initialValue = widget.initialValues != null &&
+                widget.initialValues!.containsKey(field.id)
+            ? widget.initialValues![field.id]
+            : field.defaultValue;
+
+        // Create and add the form control with appropriate type
+        if (field.type == FormFieldType.number) {
+          controls[field.id] = FormControl<num>(
+            value: initialValue as num?,
+            validators: validations,
+          );
+        } else {
+          // For text, email, password, and other string-based fields
+          controls[field.id] = FormControl<String>(
+            value: initialValue as String?,
+            validators: validations,
+          );
+        }
       }
 
-      // Add additional validations based on field type and validation rules
-      if (field.type == FormFieldType.email) {
-        validations.add(Validators.email);
-      } else if (field.type == FormFieldType.number) {
-        validations.add(Validators.number());
-      }
-
-      // Add min length validation if specified
-      if (field.validationRules != null &&
-          field.validationRules!.containsKey('minLength')) {
-        final minLength = field.validationRules!['minLength'] as int;
-        validations.add(Validators.minLength(minLength));
-      }
-
-      // Add max length validation if specified
-      if (field.validationRules != null &&
-          field.validationRules!.containsKey('maxLength')) {
-        final maxLength = field.validationRules!['maxLength'] as int;
-        validations.add(Validators.maxLength(maxLength));
-      }
-
-      // Add pattern validation if specified
-      if (field.validationRules != null &&
-          field.validationRules!.containsKey('pattern')) {
-        final pattern = field.validationRules!['pattern'] as String;
-        validations.add(Validators.pattern(pattern));
-      }
-
-      // Get initial value for this field (if provided)
-      final initialValue = widget.initialValues != null &&
-              widget.initialValues!.containsKey(field.id)
-          ? widget.initialValues![field.id]
-          : field.defaultValue;
-
-      // Create and add the form control with appropriate type
-      if (field.type == FormFieldType.number) {
-        controls[field.id] = FormControl<num>(
-          value: initialValue as num?,
-          validators: validations,
-        );
-      } else {
-        // For text, email, password, and other string-based fields
-        controls[field.id] = FormControl<String>(
-          value: initialValue as String?,
-          validators: validations,
-        );
-      }
+      // Create the form group with all controls
+      _form = FormGroup(controls);
     }
-
-    // Create the form group with all controls
-    _form = FormGroup(controls);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_form.isNull) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return ReactiveForm(
       formGroup: _form,
       child: Column(
@@ -159,16 +167,43 @@ class _DynamicFormBuilderState extends State<DynamicFormBuilder> {
               ),
             ),
 
-          // Form fields
-          ...widget.schema.fields.map((field) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: DynamicFormField(
-                field: field,
-                onValueChanged: widget.onFieldValueChanged,
-              ),
-            );
-          }),
+          // Render sections and their fields
+          ...widget.schema.sections.map(
+            (section) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Section title
+                if (section.title.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
+                    child: Text(
+                      section.title,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                // Section description
+                if (section.description != null &&
+                    section.description!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      section.description!,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                // Section fields
+                ...section.fields.map(
+                  (field) => Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: DynamicFormField(
+                      field: field,
+                      onValueChanged: widget.onFieldValueChanged,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           // Submit button
           if (widget.showSubmitButton)
