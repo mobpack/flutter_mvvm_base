@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/core/di/service_locator.dart';
-import 'package:flutter_mvvm_base/core/router/app_router.dart';
-import 'package:flutter_mvvm_base/core/services/storage_service.dart';
-import 'package:flutter_mvvm_base/core/theme/app_theme.dart';
-import 'package:flutter_mvvm_base/core/theme/theme_manager.dart';
+import 'package:flutter_mvvm_base/di/service_locator.dart';
+import 'package:flutter_mvvm_base/services/storage_service.dart';
+import 'package:flutter_mvvm_base/shared/router/app_router.dart';
+import 'package:flutter_mvvm_base/shared/theme/app_theme.dart';
+import 'package:flutter_mvvm_base/shared/theme/theme_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
