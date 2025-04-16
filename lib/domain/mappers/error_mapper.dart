@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:flutter_mvvm_base/core/services/log_service.dart';
 import 'package:flutter_mvvm_base/domain/entities/common/app_error.dart';
+import 'package:flutter_mvvm_base/shared/utils/log_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ErrorMapper {
   static AppError mapError(dynamic error, [StackTrace? stackTrace]) {
-    log.debug('Error: $error', error, stackTrace);
-    log.debug('Error type: ${error.runtimeType}');
+    logger.debug('Error: $error', error, stackTrace);
+    logger.debug('Error type: ${error.runtimeType}');
 
     if (error is AuthException) {
       return _mapAuthError(error, stackTrace);
