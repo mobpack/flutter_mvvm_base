@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/services/storage_service.dart';
+import 'package:flutter_mvvm_base/services/storage/storage_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ThemeManager extends StateNotifier<ThemeMode> {

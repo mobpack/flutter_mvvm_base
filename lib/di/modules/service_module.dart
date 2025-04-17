@@ -1,5 +1,5 @@
 import 'package:flutter_mvvm_base/di/module.dart';
-import 'package:flutter_mvvm_base/services/storage_service.dart';
+import 'package:flutter_mvvm_base/services/storage/storage_service.dart';
 import 'package:flutter_mvvm_base/services/supabase/auth/auth_interface.dart';
 import 'package:flutter_mvvm_base/services/supabase/auth/auth_service.dart';
 import 'package:flutter_mvvm_base/services/supabase/supabase_service.dart';

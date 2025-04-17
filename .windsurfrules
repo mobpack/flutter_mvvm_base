@@ -16,3 +16,6 @@
 14. Run flutter analyze and flutter format before every commit.
 15. Review all code through pull requests; require at least one peer review before merging.
 16. Use environment variables for secrets and configuration; never hardcode sensitive data.
+17. Use freezed for data classes and value objects.
+18. Use riverpod_annotation for state management.
+19. Use riverpod for state management.

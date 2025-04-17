@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/services/storage_service.dart';
+import 'package:flutter_mvvm_base/services/storage/storage_service.dart';
 import 'package:flutter_mvvm_base/shared/router/app_router.dart';
 import 'package:flutter_mvvm_base/shared/theme/app_theme.dart';
 import 'package:flutter_mvvm_base/shared/theme/theme_manager.dart';
