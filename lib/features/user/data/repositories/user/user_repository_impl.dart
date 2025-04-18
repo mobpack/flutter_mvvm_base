@@ -3,7 +3,7 @@ import 'package:flutter_mvvm_base/domain/entities/common/app_error.dart';
 import 'package:flutter_mvvm_base/domain/mappers/error_mapper.dart';
 import 'package:flutter_mvvm_base/features/user/data/repositories/user/user_repository.dart';
 import 'package:flutter_mvvm_base/features/user/domain/entities/user/user_entity.dart';
-import 'package:flutter_mvvm_base/services/supabase/user/user_service_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/user/user_service_interface.dart';
 import 'package:safe_result/safe_result.dart';
 
 /// Implementation of UserRepository

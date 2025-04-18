@@ -1,7 +1,7 @@
 import 'package:flutter_mvvm_base/di/modules/auth_module.dart';
 import 'package:flutter_mvvm_base/di/modules/service_module.dart';
 import 'package:flutter_mvvm_base/di/modules/user_module.dart';
-import 'package:flutter_mvvm_base/features/auth/domain/usecases/auth/enhanced_login_usecase.dart';
+import 'package:flutter_mvvm_base/features/auth/domain/usecases/enhanced_login_usecase.dart';
 import 'package:flutter_mvvm_base/shared/utils/log_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';

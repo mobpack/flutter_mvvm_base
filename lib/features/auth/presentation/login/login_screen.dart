@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/features/auth/presentation/login/provider/login_provider.dart';
+import 'package:flutter_mvvm_base/features/auth/presentation/login/viewmodels/login_viewmodel.dart';
 import 'package:flutter_mvvm_base/shared/widgets/base_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

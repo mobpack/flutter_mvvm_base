@@ -2,8 +2,8 @@ import 'package:flutter_mvvm_base/di/module.dart';
 import 'package:flutter_mvvm_base/features/user/data/repositories/user/user_repository.dart';
 import 'package:flutter_mvvm_base/features/user/data/repositories/user/user_repository_impl.dart';
 import 'package:flutter_mvvm_base/features/user/domain/usecases/user/fetch_user_data_usecase.dart';
-import 'package:flutter_mvvm_base/services/supabase/user/supabase_user_service.dart';
-import 'package:flutter_mvvm_base/services/supabase/user/user_service_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/user/supabase_user_service.dart';
+import 'package:flutter_mvvm_base/service/supabase/user/user_service_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Module for registering user-related dependencies

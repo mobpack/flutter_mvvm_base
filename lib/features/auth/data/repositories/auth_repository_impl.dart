@@ -1,5 +1,5 @@
-import 'package:flutter_mvvm_base/features/auth/data/repositories/auth/auth_repository.dart';
-import 'package:flutter_mvvm_base/services/supabase/auth/auth_interface.dart';
+import 'package:flutter_mvvm_base/features/auth/data/repositories/auth_repository.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_interface.dart';
 import 'package:safe_result/safe_result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

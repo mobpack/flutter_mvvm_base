@@ -1,8 +1,8 @@
 import 'package:flutter_mvvm_base/di/module.dart';
-import 'package:flutter_mvvm_base/services/storage/storage_service.dart';
-import 'package:flutter_mvvm_base/services/supabase/auth/auth_interface.dart';
-import 'package:flutter_mvvm_base/services/supabase/auth/auth_service.dart';
-import 'package:flutter_mvvm_base/services/supabase/supabase_service.dart';
+import 'package:flutter_mvvm_base/service/storage/storage_service.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_service.dart';
+import 'package:flutter_mvvm_base/service/supabase/supabase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

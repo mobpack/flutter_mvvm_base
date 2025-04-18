@@ -1,4 +1,4 @@
-import 'package:flutter_mvvm_base/services/supabase/user/user_service_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/user/user_service_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Implementation of UserService using Supabase

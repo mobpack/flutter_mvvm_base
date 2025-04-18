@@ -1,5 +1,5 @@
 import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/features/auth/domain/usecases/auth/logout_usecase.dart';
+import 'package:flutter_mvvm_base/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:flutter_mvvm_base/features/auth/providers/auth_provider.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/state/settings_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

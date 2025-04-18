@@ -1,4 +1,4 @@
-import 'package:flutter_mvvm_base/services/supabase/auth/auth_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseAuthService implements AuthService {

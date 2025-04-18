@@ -1,11 +1,11 @@
 import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/features/auth/domain/usecases/auth/login_usecase.dart';
+import 'package:flutter_mvvm_base/features/auth/domain/usecases/login_usecase.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/state/login_state.dart';
 import 'package:flutter_mvvm_base/features/auth/providers/auth_provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'login_provider.g.dart';
+part 'login_viewmodel.g.dart';
 
 @riverpod
 class Login extends _$Login {

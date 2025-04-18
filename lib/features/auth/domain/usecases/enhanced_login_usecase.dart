@@ -1,8 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_mvvm_base/di/service_locator.dart';
 import 'package:flutter_mvvm_base/domain/entities/common/app_error.dart';
 import 'package:flutter_mvvm_base/domain/mappers/error_mapper.dart';
-import 'package:flutter_mvvm_base/features/auth/data/repositories/auth/auth_repository.dart';
+import 'package:flutter_mvvm_base/features/auth/data/repositories/auth_repository.dart';
 import 'package:flutter_mvvm_base/features/user/domain/entities/user/user_entity.dart';
 import 'package:flutter_mvvm_base/features/user/domain/usecases/user/fetch_user_data_usecase.dart';
 import 'package:safe_result/safe_result.dart';
@@ -14,11 +13,10 @@ class EnhancedLoginUseCase {
 
   /// Constructor that takes repositories and use cases
   EnhancedLoginUseCase({
-    AuthRepository? authRepository,
-    FetchUserDataUseCase? fetchUserDataUseCase,
-  })  : _authRepository = authRepository ?? getIt<AuthRepository>(),
-        _fetchUserDataUseCase =
-            fetchUserDataUseCase ?? getIt<FetchUserDataUseCase>();
+    required AuthRepository authRepository,
+    required FetchUserDataUseCase fetchUserDataUseCase,
+  })  : _authRepository = authRepository,
+        _fetchUserDataUseCase = fetchUserDataUseCase;
 
   /// Executes the login process and fetches user data
   ///

@@ -1,6 +1,6 @@
-import 'package:flutter_mvvm_base/services/supabase/auth/auth_interface.dart';
-import 'package:flutter_mvvm_base/services/supabase/auth/auth_service.dart';
-import 'package:flutter_mvvm_base/services/supabase/supabase_service.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_service.dart';
+import 'package:flutter_mvvm_base/service/supabase/supabase_service.dart';
 import 'package:get_it/get_it.dart';
 
 class AuthProvider {
