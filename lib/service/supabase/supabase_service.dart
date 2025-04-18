@@ -1,5 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_mvvm_base/shared/utils/log_service.dart';
+import 'package:flutter_mvvm_base/service/logging/log_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {

@@ -1,7 +1,7 @@
 import 'package:flutter_mvvm_base/di/modules/auth_module.dart';
 import 'package:flutter_mvvm_base/di/modules/user_module.dart';
 import 'package:flutter_mvvm_base/features/auth/domain/usecases/enhanced_login_usecase.dart';
-import 'package:flutter_mvvm_base/shared/utils/log_service.dart';
+import 'package:flutter_mvvm_base/service/logging/log_service.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
