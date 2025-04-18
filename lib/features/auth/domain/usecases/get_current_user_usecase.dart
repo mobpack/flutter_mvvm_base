@@ -5,9 +5,9 @@ import 'package:flutter_mvvm_base/features/user/domain/entities/user/user_entity
 import 'package:safe_result/safe_result.dart';
 
 class GetCurrentUserUseCase {
-  final AuthRepository _authRepository;
+  final IAuthRepository _authRepository;
 
-  GetCurrentUserUseCase({required AuthRepository authRepository})
+  GetCurrentUserUseCase({required IAuthRepository authRepository})
       : _authRepository = authRepository;
 
   Future<Result<UserEntity, AppError>> execute() async {

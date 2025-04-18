@@ -5,9 +5,9 @@ import 'package:flutter_mvvm_base/features/user/domain/entities/user/user_entity
 import 'package:safe_result/safe_result.dart';
 
 class RegisterUseCase {
-  final AuthRepository _authRepository;
+  final IAuthRepository _authRepository;
 
-  RegisterUseCase({required AuthRepository authRepository})
+  RegisterUseCase({required IAuthRepository authRepository})
       : _authRepository = authRepository;
 
   Future<Result<UserEntity, AppError>> execute(

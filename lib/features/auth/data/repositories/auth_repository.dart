@@ -1,7 +1,7 @@
 import 'package:safe_result/safe_result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-abstract class AuthRepository {
+abstract class IAuthRepository {
   Future<Result<User?, AuthException>> getCurrentUser();
 
   Future<Result<AuthResponse, AuthException>> signInWithPassword({

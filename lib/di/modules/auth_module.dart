@@ -17,7 +17,7 @@ class AuthModule extends DIModule {
   }
 
   void _registerRepositories() {
-    getIt.registerLazySingleton<AuthRepository>(
+    getIt.registerLazySingleton<IAuthRepository>(
       () => AuthRepositoryImpl(
         authService: getIt<AuthService>(),
       ),

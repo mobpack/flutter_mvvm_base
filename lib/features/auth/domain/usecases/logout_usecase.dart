@@ -2,9 +2,9 @@ import 'package:flutter_mvvm_base/features/auth/data/repositories/auth_repositor
 import 'package:safe_result/safe_result.dart';
 
 class LogoutUseCase {
-  final AuthRepository _authRepository;
+  final IAuthRepository _authRepository;
 
-  LogoutUseCase({required AuthRepository authRepository})
+  LogoutUseCase({required IAuthRepository authRepository})
       : _authRepository = authRepository;
 
   Future<Result<void, Exception>> execute() async {

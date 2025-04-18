@@ -8,12 +8,12 @@ import 'package:safe_result/safe_result.dart';
 
 /// Enhanced login use case that fetches user data from Supabase after successful authentication
 class EnhancedLoginUseCase {
-  final AuthRepository _authRepository;
+  final IAuthRepository _authRepository;
   final FetchUserDataUseCase _fetchUserDataUseCase;
 
   /// Constructor that takes repositories and use cases
   EnhancedLoginUseCase({
-    required AuthRepository authRepository,
+    required IAuthRepository authRepository,
     required FetchUserDataUseCase fetchUserDataUseCase,
   })  : _authRepository = authRepository,
         _fetchUserDataUseCase = fetchUserDataUseCase;

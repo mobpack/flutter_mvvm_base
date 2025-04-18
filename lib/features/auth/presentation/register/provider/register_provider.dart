@@ -4,11 +4,6 @@ import 'package:flutter_mvvm_base/features/user/domain/entities/user/user_entity
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-final registerViewModelProvider =
-    StateNotifierProvider.autoDispose<RegisterViewModel, RegisterState>((ref) {
-  return RegisterViewModel();
-});
-
 class RegisterState {
   final bool isLoading;
   final AppError? error;
@@ -36,8 +31,8 @@ class RegisterState {
 class RegisterViewModel extends StateNotifier<RegisterState> {
   final RegisterUseCase _registerUseCase;
 
-  RegisterViewModel({RegisterUseCase? registerUseCase})
-      : _registerUseCase = registerUseCase ?? RegisterUseCase(),
+  RegisterViewModel({required RegisterUseCase registerUseCase})
+      : _registerUseCase = registerUseCase,
         super(RegisterState()) {
     _initForm();
   }

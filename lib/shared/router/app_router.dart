@@ -15,9 +15,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     refreshListenable: router,
-    redirect: router._redirect,
+    // redirect: router._redirect,
     routes: router._routes,
-    initialLocation: '/splash',
+    initialLocation: '/',
     debugLogDiagnostics: true,
   );
 });
