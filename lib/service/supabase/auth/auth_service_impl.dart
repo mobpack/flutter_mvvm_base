@@ -1,11 +1,11 @@
-import 'package:flutter_mvvm_base/service/supabase/auth/auth_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_service_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SupabaseAuthService implements AuthService {
+class SupabaseAuthServiceImpl implements IAuthService {
   final SupabaseClient _client;
   late final GoTrueClient _auth;
 
-  SupabaseAuthService({required SupabaseClient client}) : _client = client {
+  SupabaseAuthServiceImpl({required SupabaseClient client}) : _client = client {
     _auth = _client.auth;
   }
 

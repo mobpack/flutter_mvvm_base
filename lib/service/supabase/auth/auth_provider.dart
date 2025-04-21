@@ -1,22 +1,10 @@
-import 'package:flutter_mvvm_base/service/supabase/auth/auth_interface.dart';
-import 'package:flutter_mvvm_base/service/supabase/auth/auth_service.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_service_impl.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_service_interface.dart';
 import 'package:flutter_mvvm_base/service/supabase/supabase_service.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AuthProvider {
-  static void register() {
-    final getIt = GetIt.instance;
-
-    if (!getIt.isRegistered<AuthService>()) {
-      getIt.registerLazySingleton<AuthService>(
-        () => SupabaseAuthService(
-          client: getIt<SupabaseService>().client,
-        ),
-      );
-    }
-  }
-
-  static AuthService getService() {
-    return GetIt.instance<AuthService>();
-  }
-}
+/// Provides a singleton instance of [IAuthService] using [supabaseServiceProvider].
+final authServiceProvider = Provider<IAuthService>((ref) {
+  final supabaseService = ref.watch(supabaseServiceProvider);
+  return SupabaseAuthServiceImpl(client: supabaseService.client);
+});

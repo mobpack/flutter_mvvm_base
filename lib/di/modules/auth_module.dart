@@ -5,7 +5,7 @@ import 'package:flutter_mvvm_base/features/auth/domain/usecases/get_current_user
 import 'package:flutter_mvvm_base/features/auth/domain/usecases/login_usecase.dart';
 import 'package:flutter_mvvm_base/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:flutter_mvvm_base/features/auth/domain/usecases/register_usecase.dart';
-import 'package:flutter_mvvm_base/service/supabase/auth/auth_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_service_interface.dart';
 
 class AuthModule extends DIModule {
   const AuthModule(super.getIt);
@@ -19,7 +19,7 @@ class AuthModule extends DIModule {
   void _registerRepositories() {
     getIt.registerLazySingleton<IAuthRepository>(
       () => AuthRepositoryImpl(
-        authService: getIt<AuthService>(),
+        authService: getIt<IAuthService>(),
       ),
     );
   }

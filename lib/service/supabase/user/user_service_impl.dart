@@ -1,13 +1,17 @@
 import 'package:flutter_mvvm_base/service/supabase/user/user_service_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Implementation of UserService using Supabase
-class SupabaseUserService implements UserService {
+/// Implementation of [IUserService] using Supabase.
+///
+/// Use [userServiceProvider] (see user_provider.dart) to inject this service via Riverpod.
+class SupabaseUserService implements IUserService {
   final SupabaseClient _client;
 
-  /// Constructor that takes a Supabase client
+  /// Creates a [SupabaseUserService] with the given [SupabaseClient].
   SupabaseUserService({required SupabaseClient client}) : _client = client;
 
+  /// Fetches user data from the Supabase 'users' table by user ID.
+  /// Returns a map of user data or null if not found.
   @override
   Future<Map<String, dynamic>?> getUserData(String userId) async {
     try {
@@ -21,6 +25,8 @@ class SupabaseUserService implements UserService {
     }
   }
 
+  /// Updates user data in the Supabase 'users' table.
+  /// Returns the updated user data as a map.
   @override
   Future<Map<String, dynamic>> updateUserData(
     String userId,
@@ -42,6 +48,8 @@ class SupabaseUserService implements UserService {
     return response;
   }
 
+  /// Creates a new user record in the Supabase 'users' table.
+  /// Returns the created user data as a map.
   @override
   Future<Map<String, dynamic>> createUserData(
     String userId,

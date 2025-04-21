@@ -1,12 +1,12 @@
 import 'package:flutter_mvvm_base/features/auth/data/repositories/auth_repository.dart';
-import 'package:flutter_mvvm_base/service/supabase/auth/auth_interface.dart';
+import 'package:flutter_mvvm_base/service/supabase/auth/auth_service_interface.dart';
 import 'package:safe_result/safe_result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRepositoryImpl implements IAuthRepository {
-  final AuthService _authService;
+  final IAuthService _authService;
 
-  AuthRepositoryImpl({required AuthService authService})
+  AuthRepositoryImpl({required IAuthService authService})
       : _authService = authService;
 
   @override

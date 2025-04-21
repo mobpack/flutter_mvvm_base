@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-abstract class AuthService {
+abstract class IAuthService {
   // User management
   User? get currentUser;
   bool get isAuthenticated;

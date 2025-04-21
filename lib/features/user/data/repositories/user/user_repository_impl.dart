@@ -8,11 +8,11 @@ import 'package:safe_result/safe_result.dart';
 
 /// Implementation of UserRepository
 class UserRepositoryImpl implements UserRepository {
-  final UserService _userService;
+  final IUserService _userService;
 
   /// Constructor that takes a UserService
-  UserRepositoryImpl({UserService? userService})
-      : _userService = userService ?? getIt<UserService>();
+  UserRepositoryImpl({IUserService? userService})
+      : _userService = userService ?? getIt<IUserService>();
 
   @override
   Future<Result<UserEntity, AppError>> getUserById(String userId) async {

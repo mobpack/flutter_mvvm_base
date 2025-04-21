@@ -1,55 +1,40 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_mvvm_base/service/logging/log_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Provides a singleton instance of [SupabaseClient] initialized from .env.
+final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+  final url = dotenv.env['SUPABASE_URL'];
+  final anonKey = dotenv.env['SUPABASE_ANON_KEY'];
+  if (url == null || anonKey == null) {
+    throw Exception(
+      'Supabase URL and anonymous key must be provided in .env file',
+    );
+  }
+  return SupabaseClient(url, anonKey);
+});
+
+/// Service wrapper for SupabaseClient, providing higher-level methods and lifecycle.
 class SupabaseService {
-  late final SupabaseClient _client;
-  bool _initialized = false;
+  final SupabaseClient client;
 
-  SupabaseService();
+  /// Creates a [SupabaseService] with the given [SupabaseClient].
+  SupabaseService({required this.client});
 
-  Future<void> init() async {
-    if (_initialized) return;
-
-    final url = dotenv.env['SUPABASE_URL'];
-    final anonKey = dotenv.env['SUPABASE_ANON_KEY'];
-
-    if (url == null || anonKey == null) {
-      throw Exception(
-        'Supabase URL and anonymous key must be provided in .env file',
-      );
-    }
-
+  /// Example method: check connection (customize as needed).
+  Future<bool> isConnected() async {
     try {
-      await Supabase.initialize(
-        url: url,
-        anonKey: anonKey,
-      );
-      _client = Supabase.instance.client;
-      _initialized = true;
-      logger.info('Supabase initialized successfully');
-    } catch (e, stackTrace) {
-      logger.error('Failed to initialize Supabase', e, stackTrace);
-      rethrow;
-    }
-  }
-
-  SupabaseClient get client {
-    _ensureInitialized();
-    return _client;
-  }
-
-  void _ensureInitialized() {
-    if (!_initialized) {
-      throw StateError('SupabaseService must be initialized before use');
-    }
-  }
-
-  Future<void> dispose() async {
-    if (_initialized) {
-      await Supabase.instance.dispose();
-      _initialized = false;
-      logger.info('Supabase disposed successfully');
+      // Example: fetch current user (adjust to your needs)
+      final user = client.auth.currentUser;
+      return user != null;
+    } catch (_) {
+      return false;
     }
   }
 }
+
+/// Provides a singleton instance of [SupabaseService] using [supabaseClientProvider].
+final supabaseServiceProvider = Provider<SupabaseService>((ref) {
+  final client = ref.watch(supabaseClientProvider);
+  return SupabaseService(client: client);
+});
