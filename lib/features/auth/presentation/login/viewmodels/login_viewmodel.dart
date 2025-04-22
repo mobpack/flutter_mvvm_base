@@ -1,5 +1,5 @@
 import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/features/auth/domain/usecases/login_usecase.dart';
+import 'package:flutter_mvvm_base/features/auth/usecases/login_usecase.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/state/login_state.dart';
 import 'package:flutter_mvvm_base/features/auth/providers/auth_provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';

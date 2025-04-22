@@ -1,5 +1,5 @@
-import 'package:flutter_mvvm_base/domain/entities/common/app_error.dart';
-import 'package:flutter_mvvm_base/features/user/domain/entities/user/user_entity.dart';
+import 'package:flutter_mvvm_base/domain/entity/common/app_error.dart';
+import 'package:flutter_mvvm_base/domain/entity/user/user_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'login_state.freezed.dart';

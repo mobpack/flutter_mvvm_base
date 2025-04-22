@@ -1,5 +1,5 @@
 import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/features/user/domain/usecases/user/fetch_user_data_usecase.dart';
+import 'package:flutter_mvvm_base/features/user/usecases/fetch_user_data_usecase.dart';
 import 'package:flutter_mvvm_base/features/user/presentation/state/user_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
