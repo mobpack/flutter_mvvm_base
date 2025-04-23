@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/data/auth/supabase_auth_provider.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/login_screen.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/register/register_screen.dart';
-import 'package:flutter_mvvm_base/features/auth/providers/auth_provider.dart';
 import 'package:flutter_mvvm_base/features/home/presentation/my_home_page.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/settings_screen.dart';
 import 'package:flutter_mvvm_base/features/splash/presentation/splash_screen.dart';
@@ -26,24 +26,19 @@ class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
 
   RouterNotifier(this._ref) {
-    _ref.listen(authProvider, (_, __) => notifyListeners());
+    _ref.listen(supabaseAuthProvider, (_, __) => notifyListeners());
   }
 
   String? _redirect(BuildContext context, GoRouterState state) {
-    final authState = _ref.read(authProvider);
-    final user = authState.valueOrNull;
+    final authState = _ref.read(supabaseAuthProvider);
+    final user = authState.currentUser;
     final isAuth = user != null;
-    final isLoading = authState.isLoading;
 
     final isSplash = state.matchedLocation == '/splash';
     final isLoggingIn = state.matchedLocation == '/login';
     final isRegistering = state.matchedLocation == '/register';
 
-    if (isLoading) {
-      return '/splash';
-    }
-
-    if (isSplash && !isLoading) {
+    if (isSplash) {
       return isAuth ? '/' : '/login';
     }
 

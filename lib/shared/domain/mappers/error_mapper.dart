@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_mvvm_base/domain/entity/common/app_error.dart';
+import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
 import 'package:flutter_mvvm_base/shared/logging/log_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

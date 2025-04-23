@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/data/storage/storage_data_source.dart';
+import 'package:flutter_mvvm_base/data/storage/storage_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class ThemeManager extends AsyncNotifier<ThemeMode> {
   @override
   Future<ThemeMode> build() async {
-    final storage = await ref.watch(storageDataSource.future);
+    final storage = await ref.watch(storageProvider.future);
     final savedTheme = storage.getString(themeKey);
     if (savedTheme != null) {
       return ThemeMode.values.firstWhere(
@@ -17,7 +17,7 @@ class ThemeManager extends AsyncNotifier<ThemeMode> {
   }
 
   Future<void> toggleTheme() async {
-    final storage = await ref.watch(storageDataSource.future);
+    final storage = await ref.watch(storageProvider.future);
     final currentTheme = state.valueOrNull ?? ThemeMode.system;
     final nextTheme =
         currentTheme == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
@@ -26,7 +26,7 @@ class ThemeManager extends AsyncNotifier<ThemeMode> {
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
-    final storage = await ref.watch(storageDataSource.future);
+    final storage = await ref.watch(storageProvider.future);
     await storage.setString(themeKey, mode.toString());
     state = AsyncValue.data(mode);
   }

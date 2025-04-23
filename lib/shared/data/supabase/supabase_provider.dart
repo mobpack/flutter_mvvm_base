@@ -1,6 +1,6 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Provides a singleton instance of [SupabaseClient] initialized from .env.
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
@@ -14,17 +14,15 @@ final supabaseClientProvider = Provider<SupabaseClient>((ref) {
   return SupabaseClient(url, anonKey);
 });
 
-/// Service wrapper for SupabaseClient, providing higher-level methods and lifecycle.
+/// Service wrapper for [SupabaseClient], providing higher-level methods.
 class SupabaseService {
   final SupabaseClient client;
 
-  /// Creates a [SupabaseService] with the given [SupabaseClient].
   SupabaseService({required this.client});
 
-  /// Example method: check connection (customize as needed).
+  /// Example: check connection.
   Future<bool> isConnected() async {
     try {
-      // Example: fetch current user (adjust to your needs)
       final user = client.auth.currentUser;
       return user != null;
     } catch (_) {
@@ -33,8 +31,8 @@ class SupabaseService {
   }
 }
 
-/// Provides a singleton instance of [SupabaseService] using [supabaseClientProvider].
-final supabaseDataSource = Provider<SupabaseService>((ref) {
+/// Provides a singleton instance of [SupabaseService].
+final supabaseServiceProvider = Provider<SupabaseService>((ref) {
   final client = ref.watch(supabaseClientProvider);
   return SupabaseService(client: client);
 });

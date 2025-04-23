@@ -1,17 +1,11 @@
-import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/domain/entity/common/app_error.dart';
-import 'package:flutter_mvvm_base/domain/mappers/error_mapper.dart';
-import 'package:flutter_mvvm_base/features/user/data/repositories/user/user_repository.dart';
+import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
+import 'package:flutter_mvvm_base/shared/domain/mappers/error_mapper.dart';
 import 'package:flutter_mvvm_base/domain/entity/user/user_entity.dart';
 import 'package:safe_result/safe_result.dart';
 
 /// UseCase for fetching user data from Supabase after login
 class FetchUserDataUseCase {
   final UserRepository _userRepository;
-
-  /// Constructor that takes a UserRepository
-  FetchUserDataUseCase({UserRepository? userRepository})
-      : _userRepository = userRepository ?? getIt<UserRepository>();
 
   /// Fetches user data from Supabase and merges it with the current UserEntity
   ///

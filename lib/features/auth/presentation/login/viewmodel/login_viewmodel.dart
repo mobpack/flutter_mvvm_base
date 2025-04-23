@@ -1,7 +1,6 @@
-import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/features/auth/usecases/login_usecase.dart';
+import 'package:flutter_mvvm_base/data/auth/supabase_auth_provider.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/state/login_state.dart';
-import 'package:flutter_mvvm_base/features/auth/providers/auth_provider.dart';
+import 'package:flutter_mvvm_base/features/auth/usecases/login_usecase.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,10 +9,6 @@ part 'login_viewmodel.g.dart';
 @riverpod
 class Login extends _$Login {
   late final FormGroup form;
-  late final LoginUseCase _loginUseCase;
-
-  Login({LoginUseCase? loginUseCase})
-      : _loginUseCase = loginUseCase ?? getIt<LoginUseCase>();
 
   @override
   LoginState build() {
@@ -53,7 +48,7 @@ class Login extends _$Login {
 
     result.when(
       ok: (user) {
-        ref.read(authProvider.notifier).refresh();
+        ref.read(supabaseAuthProvider);
 
         state = state.copyWith(
           isLoading: false,

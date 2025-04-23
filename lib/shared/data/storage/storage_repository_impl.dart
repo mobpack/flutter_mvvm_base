@@ -1,19 +1,16 @@
-import 'package:flutter_mvvm_base/domain/repository/storage_repository.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_mvvm_base/shared/domain/repository/storage_repository.dart';
 
-/// Implementation of IStorageRepository using SharedPreferences and FlutterSecureStorage
+/// Implementation of [IStorageRepository] using SharedPreferences and SecureStorage.
 class StorageRepositoryImpl implements IStorageRepository {
   final SharedPreferences _prefs;
   final FlutterSecureStorage _secureStorage;
 
   StorageRepositoryImpl({required SharedPreferences prefs})
       : _prefs = prefs,
-        _secureStorage = const FlutterSecureStorage(
-          aOptions: AndroidOptions(),
-        );
+        _secureStorage = const FlutterSecureStorage();
 
-  // Regular Storage Methods
   @override
   Future<bool> setString(String key, String value) async {
     return await _prefs.setString(key, value);
@@ -39,7 +36,6 @@ class StorageRepositoryImpl implements IStorageRepository {
     return await _prefs.remove(key);
   }
 
-  // Secure Storage Methods
   @override
   Future<void> setSecureString(String key, String value) async {
     await _secureStorage.write(key: key, value: value);

@@ -1,6 +1,7 @@
-import 'package:flutter_mvvm_base/domain/repository/auth_repository.dart';
+import 'package:flutter_mvvm_base/features/auth/domain/repository/auth_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Implementation of [IAuthRepository] using Supabase
 class SupabaseAuthRepositoryImpl implements IAuthRepository {
   final SupabaseClient _client;
   late final GoTrueClient _auth;
@@ -51,9 +52,7 @@ class SupabaseAuthRepositoryImpl implements IAuthRepository {
   @override
   Future<UserResponse> updatePassword(String newPassword) async {
     return await _auth.updateUser(
-      UserAttributes(
-        password: newPassword,
-      ),
+      UserAttributes(password: newPassword),
     );
   }
 
