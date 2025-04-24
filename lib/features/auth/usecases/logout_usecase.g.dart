@@ -1,26 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'settings_viewmodel.dart';
+part of 'logout_usecase.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$settingsViewModelHash() => r'7025a7f21dead6dab223cccf653f62656783b9f8';
+String _$logoutUseCaseHash() => r'2d8483410fd05a4a69f34e3733cfe0e981e93ecb';
 
-/// See also [SettingsViewModel].
-@ProviderFor(SettingsViewModel)
-final settingsViewModelProvider =
-    AutoDisposeNotifierProvider<SettingsViewModel, SettingsState>.internal(
-  SettingsViewModel.new,
-  name: r'settingsViewModelProvider',
+/// See also [logoutUseCase].
+@ProviderFor(logoutUseCase)
+final logoutUseCaseProvider = AutoDisposeProvider<LogoutUseCase>.internal(
+  logoutUseCase,
+  name: r'logoutUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$settingsViewModelHash,
+      : _$logoutUseCaseHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$SettingsViewModel = AutoDisposeNotifier<SettingsState>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef LogoutUseCaseRef = AutoDisposeProviderRef<LogoutUseCase>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

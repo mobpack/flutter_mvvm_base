@@ -12,7 +12,7 @@ part 'login_viewmodel.g.dart';
 @riverpod
 class Login extends _$Login {
   late final LoginUseCase _loginUseCase;
-  late final FormGroup form;
+  late FormGroup form;
 
   @override
   LoginState build() {
