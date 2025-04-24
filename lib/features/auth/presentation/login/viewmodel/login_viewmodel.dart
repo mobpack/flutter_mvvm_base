@@ -4,6 +4,7 @@ import 'package:flutter_mvvm_base/features/auth/presentation/login/state/login_s
 import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:fpdart/fpdart.dart';
 
 part 'login_viewmodel.g.dart';
 
@@ -45,19 +46,15 @@ class Login extends _$Login {
     final email = form.control('email').value as String;
     final password = form.control('password').value as String;
 
-    final result =
-        await ref.read(loginUseCaseProvider).execute(email, password);
-
-    result.when(
-      ok: (user) {
+    final result = await ref.read(loginUseCaseProvider)
+        .execute(email, password)
+        .run();
+    result.match(
+      (failure) => state = state.copyWith(isLoading: false, error: failure),
+      (user) {
         state = state.copyWith(isLoading: false, user: user);
         context.go('/');
-      },
-      error: (error) {
-        state = state.copyWith(
-          isLoading: false,
-          error: error,
-        );
+        return null; // match requires a return value
       },
     );
   }

@@ -14,20 +14,12 @@ class SettingsViewModel extends _$SettingsViewModel {
   }
 
   Future<void> logout() async {
-    if (state.isLoading) return; // prevent multiple calls while loading
-
     state = state.copyWith(isLoading: true);
-    final result = await _logoutUseCase.execute();
+    final result = _logoutUseCase.execute();
 
-    result.when(
-      ok: (_) {
-        // Refresh auth state to trigger router redirect
-        // ref.read(supabaseAuthProvider.notifier).refresh();
-      },
-      error: (_) {
-        // Handle error if needed
-        state = state.copyWith(isLoading: false);
-      },
+    result.match(
+      (failure) => state = state.copyWith(isLoading: false, error: failure),
+      (success) => state = state.copyWith(isLoading: false),
     );
   }
 }

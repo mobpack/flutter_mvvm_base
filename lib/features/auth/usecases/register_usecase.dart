@@ -1,9 +1,7 @@
 import 'package:flutter_mvvm_base/features/auth/domain/repository/auth_repository.dart';
-import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
-import 'package:flutter_mvvm_base/shared/domain/mappers/error_mapper.dart';
-import 'package:flutter_mvvm_base/domain/repository/auth_repository.dart';
 import 'package:flutter_mvvm_base/features/user/domain/user_entity.dart';
-import 'package:safe_result/safe_result.dart';
+import 'package:flutter_mvvm_base/shared/domain/common/failure.dart';
+import 'package:fpdart/fpdart.dart';
 
 class RegisterUseCase {
   final IAuthRepository _authRepository;
@@ -11,29 +9,15 @@ class RegisterUseCase {
   RegisterUseCase({required IAuthRepository authRepository})
       : _authRepository = authRepository;
 
-  Future<Result<UserEntity, AppError>> execute(
-    String email,
-    String password,
-  ) async {
-    final result = await _authRepository.signUpWithPassword(
-      email: email,
-      password: password,
-    );
-    return result.fold(
-      onOk: (response) {
-        if (response.user == null) {
-          return Result.error(
-            ErrorMapper.mapError(Exception('User not found')),
-          );
-        }
-        return Result.ok(
-          UserEntity(
-            id: response.user!.id,
-            email: response.user!.email ?? '',
-          ),
-        );
-      },
-      onError: (error) => Result.error(ErrorMapper.mapError(error)),
-    );
+  TaskEither<Failure, UserEntity> execute(String email, String password) {
+    return _authRepository
+        .signUpWithPassword(email: email, password: password)
+        .flatMap((response) {
+          final user = response.user;
+          if (user == null) {
+            return TaskEither.left(Failure.mapping('User not found'));
+          }
+          return TaskEither.right(UserEntity(id: user.id, email: user.email ?? ''));
+        });
   }
 }

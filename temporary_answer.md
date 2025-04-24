@@ -1,91 +1,121 @@
-# 1. Current Analysis
+# Switching from Dartz to FPDart for Functional Error Handling
 
-- `lib/domain/`
-  - **entity/**: shared domain models used across multiple features
-  - **repository/**: abstract repository interfaces
+## Implementation Changes
 
-- `lib/features/auth/`
-  - **domain/**: auth-specific models & interfaces
-  - **usecases/**: business logic for authentication
-  - **data/** & **presentation/**: layers mapping to domain use cases
+We've successfully switched from dartz to fpdart, which provides a more modern and cleaner API for functional programming in Dart. Here's what we did:
 
-- `lib/features/user/`
-  - **domain/**: user-specific models & interfaces
-  - **usecases/**, **data/**, **presentation/**: feature layers
+### 1. Updated Dependencies
 
-- `lib/shared/data/`
-  - shared data models, DTOs, mappers, sources
+```yaml
+# Before
+dependencies:
+  dartz: ^0.10.1
 
-- `lib/shared/domain/`
-  - truly global domain types (value objects, failures, exceptions)
-
----
-
-# 2. Migration Plan: Flatten `lib/domain`
-
-1. **Inventory**
-   - List all Dart files under `lib/domain/` using:
-     ```bash
-     find lib/domain -type f -name "*.dart"
-     ```
-2. **Categorize & Map**
-   - **Feature-specific** types → `lib/features/<feature>/domain/`
-   - **Shared** types → `lib/shared/domain/`
-   - **Specific mappings**:
-     - `lib/domain/entity/user/` → `lib/features/user/domain/`
-     - `lib/domain/repository/user_repository.dart` → `lib/features/user/domain/user_repository.dart`
-     - `lib/domain/repository/storage_repository.dart` → `lib/shared/domain/storage_repository.dart`
-3. **Move Files**
-   - E.g.:
-     ```bash
-     git mv lib/domain/entity/user.dart lib/features/user/domain/user.dart
-     git mv lib/domain/repository/user_repository.dart lib/features/user/domain/user_repository.dart
-     git mv lib/domain/repository/storage_repository.dart lib/shared/domain/storage_repository.dart
-     ```
-4. **Update Imports**
-   - Replace all `package:…/domain/...` imports with new paths.
-   - Use IDE refactor or global `sed`/`rg –replace` commands.
-5. **Rebuild & Verify**
-   - Run codegen:
-     ```bash
-     flutter pub run build_runner build --delete-conflicting-outputs
-     ```
-   - Run analyzer:
-     ```bash
-     flutter analyze
-     ```
-   - Fix any errors.
-6. **Test**
-   - Execute unit/widget/integration tests.
-7. **Delete Empty Folder**
-   - Once all files relocated, remove:
-     ```bash
-     git rm -r lib/domain
-     ```
-8. **Commit**
-   - Commit with clear message: “chore: flatten lib/domain into feature/shared modules”
-
----
-
-# 3. New Structure Overview (`lib`)
-
-```
-lib/
-├── features/
-│   ├── auth/
-│   │   ├── domain/
-│   │   ├── data/
-│   │   ├── presentation/
-│   │   └── usecases/
-│   └── user/
-│       ├── domain/
-│       ├── data/
-│       ├── presentation/
-│       └── usecases/
-├── shared/
-│   ├── domain/
-│   └── data/
-└── main.dart
+# After
+dependencies:
+  fpdart: ^1.1.0
 ```
 
-This plan ensures all domain types are co-located with their features or shared as true globals. Delete `lib/domain` once migration is verified.
+### 2. Repository Methods
+
+```dart
+// Before (dartz style):
+Task<Either<Failure, AuthResponse>> signInWithPassword({
+  required String email,
+  required String password,
+}) => Task(() async {
+  try {
+    final response = await _auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+    return Right(response);
+  } catch (error) {
+    return Left(Failure.network(error.toString()));
+  }
+});
+
+// After (fpdart style):
+TaskEither<Failure, AuthResponse> signInWithPassword({
+  required String email,
+  required String password,
+}) => TaskEither.tryCatch(
+  () => _auth.signInWithPassword(
+    email: email,
+    password: password,
+  ),
+  (error, _) => Failure.network(error.toString()),
+);
+```
+
+### 3. UseCase Methods
+
+```dart
+// Before (dartz style):
+Task<Either<Failure, UserEntity>> execute(String email, String password) {
+  return _authRepository
+      .signInWithPassword(email: email, password: password)
+      .map((either) => either.fold(
+            (failure) => Left(failure),
+            (response) {
+              // ...
+              return Right(UserEntity(...));
+            },
+          ));
+}
+
+// After (fpdart style):
+TaskEither<Failure, UserEntity> execute(String email, String password) {
+  return _authRepository
+      .signInWithPassword(email: email, password: password)
+      .flatMap((response) {
+        final user = response.user;
+        if (user == null) {
+          return TaskEither.left(Failure.mapping('User not found'));
+        }
+        return TaskEither.right(UserEntity(id: user.id, email: user.email ?? ''));
+      });
+}
+```
+
+### 4. ViewModel Usage
+
+```dart
+// Before (dartz style):
+final either = await ref.read(loginUseCaseProvider)
+    .execute(email, password)
+    .run();
+
+either.fold(
+  (failure) => state = state.copyWith(isLoading: false, error: failure),
+  (user) => state = state.copyWith(isLoading: false, user: user),
+);
+
+// After (fpdart style):
+final result = await ref.read(loginUseCaseProvider)
+    .execute(email, password)
+    .run();
+
+result.match(
+  (failure) => state = state.copyWith(isLoading: false, error: failure),
+  (user) {
+    state = state.copyWith(isLoading: false, user: user);
+    context.go('/');
+    return null; // match requires a return value
+  },
+);
+```
+
+## Benefits of Using FPDart
+
+1. **Cleaner API**: Built-in `TaskEither<L, R>` type for better composability
+2. **Better Type Safety**: Improved type inference with Dart 3
+3. **More Active Maintenance**: Regular updates and improvements
+4. **Simpler Error Handling**: More intuitive API for handling errors
+5. **Improved Readability**: Less boilerplate code
+
+## Next Steps
+
+1. Run tests to ensure everything works as expected
+2. Update any remaining code that might still be using dartz patterns
+3. Consider using other fpdart features like `Option<A>` and `IO<A>` for additional functional programming patterns

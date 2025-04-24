@@ -1,5 +1,7 @@
 import 'package:flutter_mvvm_base/features/auth/domain/repository/auth_repository.dart';
+import 'package:flutter_mvvm_base/shared/domain/common/failure.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:fpdart/fpdart.dart';
 
 /// Implementation of [IAuthRepository] using Supabase
 class SupabaseAuthRepositoryImpl implements IAuthRepository {
@@ -18,51 +20,55 @@ class SupabaseAuthRepositoryImpl implements IAuthRepository {
   bool get isAuthenticated => _auth.currentUser != null;
 
   @override
-  Future<AuthResponse> signInWithPassword({
+  TaskEither<Failure, AuthResponse> signInWithPassword({
     required String email,
     required String password,
-  }) async {
-    return await _auth.signInWithPassword(
+  }) => TaskEither.tryCatch(
+    () => _auth.signInWithPassword(
       email: email,
       password: password,
-    );
-  }
+    ),
+    (error, _) => Failure.network(error.toString()),
+  );
 
   @override
-  Future<AuthResponse> signUpWithPassword({
+  TaskEither<Failure, AuthResponse> signUpWithPassword({
     required String email,
     required String password,
-  }) async {
-    return await _auth.signUp(
+  }) => TaskEither.tryCatch(
+    () => _auth.signUp(
       email: email,
       password: password,
-    );
-  }
+    ),
+    (error, _) => Failure.network(error.toString()),
+  );
 
   @override
-  Future<void> signOut() async {
-    await _auth.signOut();
-  }
+  TaskEither<Failure, void> signOut() => TaskEither.tryCatch(
+    () => _auth.signOut(),
+    (error, _) => Failure.unknown(error.toString()),
+  );
 
   @override
-  Future<void> resetPassword(String email) async {
-    await _auth.resetPasswordForEmail(email);
-  }
+  TaskEither<Failure, void> resetPassword(String email) => TaskEither.tryCatch(
+    () => _auth.resetPasswordForEmail(email),
+    (error, _) => Failure.network(error.toString()),
+  );
 
   @override
-  Future<UserResponse> updatePassword(String newPassword) async {
-    return await _auth.updateUser(
-      UserAttributes(password: newPassword),
-    );
-  }
+  TaskEither<Failure, UserResponse> updatePassword(String newPassword) => TaskEither.tryCatch(
+    () => _auth.updateUser(UserAttributes(password: newPassword)),
+    (error, _) => Failure.network(error.toString()),
+  );
 
   @override
   Session? get currentSession => _auth.currentSession;
 
   @override
-  Future<AuthResponse?> refreshSession() async {
-    return await _auth.refreshSession();
-  }
+  TaskEither<Failure, AuthResponse?> refreshSession() => TaskEither.tryCatch(
+    () => _auth.refreshSession(),
+    (error, _) => Failure.unknown(error.toString()),
+  );
 
   @override
   Stream<AuthState> get onAuthStateChange => _auth.onAuthStateChange;

@@ -1,4 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:flutter_mvvm_base/shared/domain/common/failure.dart';
 
 abstract class IAuthRepository {
   // User management
@@ -6,25 +8,25 @@ abstract class IAuthRepository {
   bool get isAuthenticated;
 
   // Authentication
-  Future<AuthResponse> signInWithPassword({
+  TaskEither<Failure, AuthResponse> signInWithPassword({
     required String email,
     required String password,
   });
 
-  Future<AuthResponse> signUpWithPassword({
+  TaskEither<Failure, AuthResponse> signUpWithPassword({
     required String email,
     required String password,
   });
 
-  Future<void> signOut();
+  TaskEither<Failure, void> signOut();
 
   // Password management
-  Future<void> resetPassword(String email);
-  Future<UserResponse> updatePassword(String newPassword);
+  TaskEither<Failure, void> resetPassword(String email);
+  TaskEither<Failure, UserResponse> updatePassword(String newPassword);
 
   // Session management
   Session? get currentSession;
-  Future<AuthResponse?> refreshSession();
+  TaskEither<Failure, AuthResponse?> refreshSession();
 
   // Auth state
   Stream<AuthState> get onAuthStateChange;

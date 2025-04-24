@@ -1,12 +1,13 @@
-import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
+import 'package:flutter_mvvm_base/features/auth/domain/usecases/providers.dart';
 import 'package:flutter_mvvm_base/features/auth/usecases/register_usecase.dart';
 import 'package:flutter_mvvm_base/features/user/domain/user_entity.dart';
+import 'package:flutter_mvvm_base/shared/domain/common/failure.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class RegisterState {
   final bool isLoading;
-  final AppError? error;
+  final Failure? error;
   final UserEntity? user;
 
   RegisterState({
@@ -17,7 +18,7 @@ class RegisterState {
 
   RegisterState copyWith({
     bool? isLoading,
-    AppError? error,
+    Failure? error,
     UserEntity? user,
   }) {
     return RegisterState(
@@ -65,28 +66,25 @@ class RegisterViewModel extends StateNotifier<RegisterState> {
 
   Future<void> register() async {
     if (form.invalid) return;
-
     state = state.copyWith(isLoading: true, error: null);
-
-    final result = await _registerUseCase.execute(
-      form.control('email').value as String,
-      form.control('password').value as String,
-    );
-
-    result.when(
-      ok: (user) {
-        state = state.copyWith(
-          isLoading: false,
-          user: user,
-          error: null,
-        );
-      },
-      error: (error) {
-        state = state.copyWith(
-          isLoading: false,
-          error: error,
-        );
-      },
+    final result = await _registerUseCase
+        .execute(
+          form.control('email').value as String,
+          form.control('password').value as String,
+        )
+        .run();
+    result.match(
+      (failure) => state = state.copyWith(isLoading: false, error: failure),
+      (user) =>
+          state = state.copyWith(isLoading: false, user: user, error: null),
     );
   }
 }
+
+/// Expose provider for RegisterViewModel & state
+final registerProvider =
+    StateNotifierProvider<RegisterViewModel, RegisterState>(
+  (ref) => RegisterViewModel(
+    registerUseCase: ref.watch(registerUseCaseProvider),
+  ),
+);

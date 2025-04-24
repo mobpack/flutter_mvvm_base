@@ -1,8 +1,7 @@
-import 'package:flutter_mvvm_base/features/user/domain/user_entity.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:flutter_mvvm_base/features/auth/domain/repository/auth_repository.dart';
-import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
-import 'package:flutter_mvvm_base/shared/domain/mappers/error_mapper.dart';
-import 'package:safe_result/safe_result.dart';
+import 'package:flutter_mvvm_base/features/user/domain/user_entity.dart';
+import 'package:flutter_mvvm_base/shared/domain/common/failure.dart';
 
 class GetCurrentUserUseCase {
   final IAuthRepository _authRepository;
@@ -10,21 +9,11 @@ class GetCurrentUserUseCase {
   GetCurrentUserUseCase({required IAuthRepository authRepository})
       : _authRepository = authRepository;
 
-  Future<Result<UserEntity, AppError>> execute() async {
-    final result = await _authRepository.getCurrentUser();
-    return result.fold(
-      onOk: (value) {
-        if (value == null) {
-          throw ErrorMapper.mapError(Exception('User not found'));
-        }
-        return Result.ok(
-          UserEntity(
-            id: value.id,
-            email: value.email ?? '',
-          ),
-        );
-      },
-      onError: (error) => Result.error(ErrorMapper.mapError(error)),
-    );
+  TaskEither<Failure, UserEntity> execute() {
+    final user = _authRepository.currentUser;
+    if (user == null) {
+      return TaskEither.left(Failure.mapping('User not found'));
+    }
+    return TaskEither.right(UserEntity(id: user.id, email: user.email ?? ''));
   }
 }
