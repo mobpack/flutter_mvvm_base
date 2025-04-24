@@ -4,7 +4,6 @@ import 'package:flutter_mvvm_base/features/auth/presentation/register/register_s
 import 'package:flutter_mvvm_base/features/home/presentation/my_home_page.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/settings_screen.dart';
 import 'package:flutter_mvvm_base/features/splash/presentation/splash_screen.dart';
-import 'package:flutter_mvvm_base/features/user/presentation/user_profile_screen.dart';
 import 'package:flutter_mvvm_base/shared/router/providers.dart';
 import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/example_form_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -85,11 +84,6 @@ class RouterNotifier extends ChangeNotifier {
           path: '/dynamic-form',
           name: 'dynamic-form',
           builder: (context, state) => const ExampleFormScreen(),
-        ),
-        GoRoute(
-          path: '/profile',
-          name: 'profile',
-          builder: (context, state) => const UserProfileScreen(),
         ),
       ];
 }

@@ -21,6 +21,9 @@ mixin _$UserEntity {
   /// User's email address (required in DB)
   String get email;
 
+  /// User's display name
+  String? get name;
+
   /// User's role (defaults to 'user' in DB)
   String get role;
 
@@ -32,6 +35,12 @@ mixin _$UserEntity {
 
   /// Whether the user has completed onboarding
   bool get onboardingCompleted;
+
+  /// Whether the user's email is confirmed
+  bool get emailConfirmed;
+
+  /// Timestamp when the user last signed in
+  DateTime? get lastSignInAt;
 
   /// Timestamp when the user was created
   DateTime? get createdAt;
@@ -56,12 +65,17 @@ mixin _$UserEntity {
             other is UserEntity &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.role, role) || other.role == role) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.language, language) ||
                 other.language == language) &&
             (identical(other.onboardingCompleted, onboardingCompleted) ||
                 other.onboardingCompleted == onboardingCompleted) &&
+            (identical(other.emailConfirmed, emailConfirmed) ||
+                other.emailConfirmed == emailConfirmed) &&
+            (identical(other.lastSignInAt, lastSignInAt) ||
+                other.lastSignInAt == lastSignInAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -70,12 +84,23 @@ mixin _$UserEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, email, role, avatar,
-      language, onboardingCompleted, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      email,
+      name,
+      role,
+      avatar,
+      language,
+      onboardingCompleted,
+      emailConfirmed,
+      lastSignInAt,
+      createdAt,
+      updatedAt);
 
   @override
   String toString() {
-    return 'UserEntity(id: $id, email: $email, role: $role, avatar: $avatar, language: $language, onboardingCompleted: $onboardingCompleted, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserEntity(id: $id, email: $email, name: $name, role: $role, avatar: $avatar, language: $language, onboardingCompleted: $onboardingCompleted, emailConfirmed: $emailConfirmed, lastSignInAt: $lastSignInAt, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -88,10 +113,13 @@ abstract mixin class $UserEntityCopyWith<$Res> {
   $Res call(
       {String id,
       String email,
+      String? name,
       String role,
       String? avatar,
       String language,
       bool onboardingCompleted,
+      bool emailConfirmed,
+      DateTime? lastSignInAt,
       DateTime? createdAt,
       DateTime? updatedAt});
 }
@@ -110,10 +138,13 @@ class _$UserEntityCopyWithImpl<$Res> implements $UserEntityCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? email = null,
+    Object? name = freezed,
     Object? role = null,
     Object? avatar = freezed,
     Object? language = null,
     Object? onboardingCompleted = null,
+    Object? emailConfirmed = null,
+    Object? lastSignInAt = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -126,6 +157,10 @@ class _$UserEntityCopyWithImpl<$Res> implements $UserEntityCopyWith<$Res> {
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      name: freezed == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
       role: null == role
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -142,6 +177,14 @@ class _$UserEntityCopyWithImpl<$Res> implements $UserEntityCopyWith<$Res> {
           ? _self.onboardingCompleted
           : onboardingCompleted // ignore: cast_nullable_to_non_nullable
               as bool,
+      emailConfirmed: null == emailConfirmed
+          ? _self.emailConfirmed
+          : emailConfirmed // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastSignInAt: freezed == lastSignInAt
+          ? _self.lastSignInAt
+          : lastSignInAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       createdAt: freezed == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -160,10 +203,13 @@ class _UserEntity implements UserEntity {
   const _UserEntity(
       {required this.id,
       required this.email,
+      this.name,
       this.role = 'user',
       this.avatar,
       this.language = 'en',
       this.onboardingCompleted = false,
+      this.emailConfirmed = false,
+      this.lastSignInAt,
       this.createdAt,
       this.updatedAt});
   factory _UserEntity.fromJson(Map<String, dynamic> json) =>
@@ -176,6 +222,10 @@ class _UserEntity implements UserEntity {
   /// User's email address (required in DB)
   @override
   final String email;
+
+  /// User's display name
+  @override
+  final String? name;
 
   /// User's role (defaults to 'user' in DB)
   @override
@@ -195,6 +245,15 @@ class _UserEntity implements UserEntity {
   @override
   @JsonKey()
   final bool onboardingCompleted;
+
+  /// Whether the user's email is confirmed
+  @override
+  @JsonKey()
+  final bool emailConfirmed;
+
+  /// Timestamp when the user last signed in
+  @override
+  final DateTime? lastSignInAt;
 
   /// Timestamp when the user was created
   @override
@@ -226,12 +285,17 @@ class _UserEntity implements UserEntity {
             other is _UserEntity &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.role, role) || other.role == role) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.language, language) ||
                 other.language == language) &&
             (identical(other.onboardingCompleted, onboardingCompleted) ||
                 other.onboardingCompleted == onboardingCompleted) &&
+            (identical(other.emailConfirmed, emailConfirmed) ||
+                other.emailConfirmed == emailConfirmed) &&
+            (identical(other.lastSignInAt, lastSignInAt) ||
+                other.lastSignInAt == lastSignInAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -240,12 +304,23 @@ class _UserEntity implements UserEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, email, role, avatar,
-      language, onboardingCompleted, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      email,
+      name,
+      role,
+      avatar,
+      language,
+      onboardingCompleted,
+      emailConfirmed,
+      lastSignInAt,
+      createdAt,
+      updatedAt);
 
   @override
   String toString() {
-    return 'UserEntity(id: $id, email: $email, role: $role, avatar: $avatar, language: $language, onboardingCompleted: $onboardingCompleted, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserEntity(id: $id, email: $email, name: $name, role: $role, avatar: $avatar, language: $language, onboardingCompleted: $onboardingCompleted, emailConfirmed: $emailConfirmed, lastSignInAt: $lastSignInAt, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -260,10 +335,13 @@ abstract mixin class _$UserEntityCopyWith<$Res>
   $Res call(
       {String id,
       String email,
+      String? name,
       String role,
       String? avatar,
       String language,
       bool onboardingCompleted,
+      bool emailConfirmed,
+      DateTime? lastSignInAt,
       DateTime? createdAt,
       DateTime? updatedAt});
 }
@@ -282,10 +360,13 @@ class __$UserEntityCopyWithImpl<$Res> implements _$UserEntityCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? email = null,
+    Object? name = freezed,
     Object? role = null,
     Object? avatar = freezed,
     Object? language = null,
     Object? onboardingCompleted = null,
+    Object? emailConfirmed = null,
+    Object? lastSignInAt = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -298,6 +379,10 @@ class __$UserEntityCopyWithImpl<$Res> implements _$UserEntityCopyWith<$Res> {
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      name: freezed == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
       role: null == role
           ? _self.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -314,6 +399,14 @@ class __$UserEntityCopyWithImpl<$Res> implements _$UserEntityCopyWith<$Res> {
           ? _self.onboardingCompleted
           : onboardingCompleted // ignore: cast_nullable_to_non_nullable
               as bool,
+      emailConfirmed: null == emailConfirmed
+          ? _self.emailConfirmed
+          : emailConfirmed // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastSignInAt: freezed == lastSignInAt
+          ? _self.lastSignInAt
+          : lastSignInAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       createdAt: freezed == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable

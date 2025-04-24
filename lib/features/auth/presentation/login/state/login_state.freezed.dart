@@ -17,7 +17,8 @@ T _$identity<T>(T value) => value;
 mixin _$LoginState {
   bool get isLoading;
   UserEntity? get user;
-  Failure? get error;
+  AppError? get error;
+  bool get canRetry;
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
@@ -33,17 +34,19 @@ mixin _$LoginState {
             other is LoginState &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
-            const DeepCollectionEquality().equals(other.user, user) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.user, user) || other.user == user) &&
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.canRetry, canRetry) ||
+                other.canRetry == canRetry));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, isLoading, const DeepCollectionEquality().hash(user), error);
+  int get hashCode =>
+      Object.hash(runtimeType, isLoading, user, error, canRetry);
 
   @override
   String toString() {
-    return 'LoginState(isLoading: $isLoading, user: $user, error: $error)';
+    return 'LoginState(isLoading: $isLoading, user: $user, error: $error, canRetry: $canRetry)';
   }
 }
 
@@ -53,9 +56,10 @@ abstract mixin class $LoginStateCopyWith<$Res> {
           LoginState value, $Res Function(LoginState) _then) =
       _$LoginStateCopyWithImpl;
   @useResult
-  $Res call({bool isLoading, UserEntity? user, Failure? error});
+  $Res call({bool isLoading, UserEntity? user, AppError? error, bool canRetry});
 
-  $FailureCopyWith<$Res>? get error;
+  $UserEntityCopyWith<$Res>? get user;
+  $AppErrorCopyWith<$Res>? get error;
 }
 
 /// @nodoc
@@ -73,6 +77,7 @@ class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
     Object? isLoading = null,
     Object? user = freezed,
     Object? error = freezed,
+    Object? canRetry = null,
   }) {
     return _then(_self.copyWith(
       isLoading: null == isLoading
@@ -86,7 +91,11 @@ class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
       error: freezed == error
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
-              as Failure?,
+              as AppError?,
+      canRetry: null == canRetry
+          ? _self.canRetry
+          : canRetry // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 
@@ -94,12 +103,26 @@ class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $FailureCopyWith<$Res>? get error {
+  $UserEntityCopyWith<$Res>? get user {
+    if (_self.user == null) {
+      return null;
+    }
+
+    return $UserEntityCopyWith<$Res>(_self.user!, (value) {
+      return _then(_self.copyWith(user: value));
+    });
+  }
+
+  /// Create a copy of LoginState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AppErrorCopyWith<$Res>? get error {
     if (_self.error == null) {
       return null;
     }
 
-    return $FailureCopyWith<$Res>(_self.error!, (value) {
+    return $AppErrorCopyWith<$Res>(_self.error!, (value) {
       return _then(_self.copyWith(error: value));
     });
   }
@@ -108,7 +131,8 @@ class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
 /// @nodoc
 
 class _LoginState implements LoginState {
-  const _LoginState({this.isLoading = false, this.user, this.error});
+  const _LoginState(
+      {this.isLoading = false, this.user, this.error, this.canRetry = false});
 
   @override
   @JsonKey()
@@ -116,7 +140,10 @@ class _LoginState implements LoginState {
   @override
   final UserEntity? user;
   @override
-  final Failure? error;
+  final AppError? error;
+  @override
+  @JsonKey()
+  final bool canRetry;
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
@@ -133,17 +160,19 @@ class _LoginState implements LoginState {
             other is _LoginState &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
-            const DeepCollectionEquality().equals(other.user, user) &&
-            (identical(other.error, error) || other.error == error));
+            (identical(other.user, user) || other.user == user) &&
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.canRetry, canRetry) ||
+                other.canRetry == canRetry));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, isLoading, const DeepCollectionEquality().hash(user), error);
+  int get hashCode =>
+      Object.hash(runtimeType, isLoading, user, error, canRetry);
 
   @override
   String toString() {
-    return 'LoginState(isLoading: $isLoading, user: $user, error: $error)';
+    return 'LoginState(isLoading: $isLoading, user: $user, error: $error, canRetry: $canRetry)';
   }
 }
 
@@ -155,10 +184,12 @@ abstract mixin class _$LoginStateCopyWith<$Res>
       __$LoginStateCopyWithImpl;
   @override
   @useResult
-  $Res call({bool isLoading, UserEntity? user, Failure? error});
+  $Res call({bool isLoading, UserEntity? user, AppError? error, bool canRetry});
 
   @override
-  $FailureCopyWith<$Res>? get error;
+  $UserEntityCopyWith<$Res>? get user;
+  @override
+  $AppErrorCopyWith<$Res>? get error;
 }
 
 /// @nodoc
@@ -176,6 +207,7 @@ class __$LoginStateCopyWithImpl<$Res> implements _$LoginStateCopyWith<$Res> {
     Object? isLoading = null,
     Object? user = freezed,
     Object? error = freezed,
+    Object? canRetry = null,
   }) {
     return _then(_LoginState(
       isLoading: null == isLoading
@@ -189,7 +221,11 @@ class __$LoginStateCopyWithImpl<$Res> implements _$LoginStateCopyWith<$Res> {
       error: freezed == error
           ? _self.error
           : error // ignore: cast_nullable_to_non_nullable
-              as Failure?,
+              as AppError?,
+      canRetry: null == canRetry
+          ? _self.canRetry
+          : canRetry // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 
@@ -197,12 +233,26 @@ class __$LoginStateCopyWithImpl<$Res> implements _$LoginStateCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $FailureCopyWith<$Res>? get error {
+  $UserEntityCopyWith<$Res>? get user {
+    if (_self.user == null) {
+      return null;
+    }
+
+    return $UserEntityCopyWith<$Res>(_self.user!, (value) {
+      return _then(_self.copyWith(user: value));
+    });
+  }
+
+  /// Create a copy of LoginState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AppErrorCopyWith<$Res>? get error {
     if (_self.error == null) {
       return null;
     }
 
-    return $FailureCopyWith<$Res>(_self.error!, (value) {
+    return $AppErrorCopyWith<$Res>(_self.error!, (value) {
       return _then(_self.copyWith(error: value));
     });
   }

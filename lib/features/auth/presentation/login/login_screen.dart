@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/viewmodel/login_viewmodel.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/error_banner.dart';
 import 'package:flutter_mvvm_base/shared/widgets/base_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -63,7 +64,10 @@ class LoginScreen extends ConsumerWidget {
                             ),
                             SizedBox(height: 32),
                             if (state.error != null)
-                              LoginErrorContainer(error: state.error?.message),
+                              ErrorBanner(
+                                error: state.error!,
+                                onDismiss: viewModel.clearError,
+                              ),
                             ReactiveTextField<String>(
                               formControlName: 'email',
                               decoration: InputDecoration(
@@ -153,7 +157,14 @@ class LoginScreen extends ConsumerWidget {
 
   void _onSubmit(Login viewModel, BuildContext context) {
     if (viewModel.form.valid) {
-      viewModel.login(context);
+      viewModel.login(
+        context,
+        onLoginSuccess: () {
+          // Safe to use context here as this is a synchronous callback
+          // that will only be called if the widget is still mounted
+          context.go('/');
+        },
+      );
     } else {
       viewModel.form.markAllAsTouched();
     }
@@ -179,50 +190,6 @@ class LoginForgotPassword extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
         ),
-      ),
-    );
-  }
-}
-
-class LoginErrorContainer extends StatelessWidget {
-  const LoginErrorContainer({
-    required this.error,
-    super.key,
-  });
-
-  final String? error;
-
-  @override
-  Widget build(BuildContext context) {
-    if (error == null) return SizedBox.shrink();
-
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.errorContainer,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 24,
-            color: Theme.of(context).colorScheme.onErrorContainer,
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              error!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onErrorContainer,
-                  ),
-            ),
-          ),
-        ],
       ),
     );
   }

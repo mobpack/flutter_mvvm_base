@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
 import 'package:logger/logger.dart';
 
 class LogService {
@@ -63,6 +64,22 @@ class LogService {
   void dispose() {
     _logger.close();
     _initialized = false;
+  }
+
+  /// Logs an AppError with appropriate level based on error type
+  void logError(AppError appError) {
+    switch (appError) {
+      case NetworkError(message: final msg, originalError: final err):
+        warning('Network error: $msg', err);
+      case AuthError(message: final msg, code: final code, originalError: final err):
+        warning('Auth error: $msg (code: $code)', err);
+      case ValidationError(errors: final errors):
+        info('Validation error: $errors');
+      case ServerError(message: final msg, code: final code, originalError: final err):
+        error('Server error: $msg (code: $code)', err);
+      case UnexpectedError(message: final msg, stackTrace: final stack, originalError: final err):
+        error('Unexpected error: $msg', err, stack);
+    }
   }
 }
 

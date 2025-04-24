@@ -1,32 +1,41 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
+import 'package:flutter_mvvm_base/shared/domain/entities/user_entity.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:flutter_mvvm_base/shared/domain/common/failure.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Repository interface for authentication operations
 abstract class IAuthRepository {
   // User management
-  User? get currentUser;
+  TaskEither<AppError, UserEntity?> getCurrentUser();
   bool get isAuthenticated;
 
   // Authentication
-  TaskEither<Failure, AuthResponse> signInWithPassword({
+  /// Sign in with email and password
+  TaskEither<AppError, UserEntity> signInWithPassword({
     required String email,
     required String password,
   });
 
-  TaskEither<Failure, AuthResponse> signUpWithPassword({
+  /// Sign up with email and password
+  TaskEither<AppError, UserEntity> signUpWithPassword({
     required String email,
     required String password,
   });
 
-  TaskEither<Failure, void> signOut();
+  /// Sign out the current user
+  TaskEither<AppError, Unit> signOut();
 
   // Password management
-  TaskEither<Failure, void> resetPassword(String email);
-  TaskEither<Failure, UserResponse> updatePassword(String newPassword);
+  /// Reset password for a given email
+  TaskEither<AppError, Unit> resetPassword({required String email});
+
+  /// Update password for the current user
+  TaskEither<AppError, UserEntity> updatePassword({
+    required String newPassword,
+  });
 
   // Session management
-  Session? get currentSession;
-  TaskEither<Failure, AuthResponse?> refreshSession();
+  TaskEither<AppError, Unit> refreshSession();
 
   // Auth state
   Stream<AuthState> get onAuthStateChange;

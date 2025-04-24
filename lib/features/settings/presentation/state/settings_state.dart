@@ -1,15 +1,11 @@
-class SettingsState {
-  final bool isLoading;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const SettingsState({
-    this.isLoading = false,
-  });
+part 'settings_state.freezed.dart';
 
-  SettingsState copyWith({
+@freezed
+abstract class SettingsState with _$SettingsState {
+  const factory SettingsState({
     bool? isLoading,
-  }) {
-    return SettingsState(
-      isLoading: isLoading ?? this.isLoading,
-    );
-  }
+    String? error,
+  }) = _SettingsState;
 }

@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
+import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
 import 'package:flutter_mvvm_base/shared/logging/log_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ErrorMapper {
-  static AppError mapError(dynamic error, [StackTrace? stackTrace]) {
+  /// Maps exceptions to domain-specific AppError types
+  static AppError mapException(dynamic error, [StackTrace? stackTrace]) {
     logger.debug('Error: $error', error, stackTrace);
     logger.debug('Error type: ${error.runtimeType}');
 
@@ -18,18 +19,33 @@ class ErrorMapper {
     }
 
     if (error is SocketException || error is HttpException) {
-      return AppError.network(error.toString());
+      return AppError.network(
+        message: 'Connection error: ${error.message}',
+        originalError: error,
+      );
     }
 
-    return AppError.unknown(error, stackTrace);
+    return AppError.unexpected(
+      message: error.toString(),
+      stackTrace: stackTrace,
+      originalError: error,
+    );
   }
 
   static AppError _mapAuthError(AuthException error, [StackTrace? stackTrace]) {
     switch (error.code) {
       case 'invalid-login-credentials':
-        return AppError.authentication('Invalid email or password', error.code);
+        return AppError.auth(
+          message: 'Invalid email or password',
+          code: error.code,
+          originalError: error,
+        );
       default:
-        return AppError.authentication(error.message, error.code);
+        return AppError.auth(
+          message: error.message,
+          code: error.code,
+          originalError: error,
+        );
     }
   }
 
@@ -39,14 +55,22 @@ class ErrorMapper {
   ]) {
     if (error.code == '23505') {
       // Unique violation
-      return AppError.validation('This record already exists');
+      return AppError.validation(
+        errors: {'general': ['This record already exists']},
+      );
     }
 
     if (error.code?.startsWith('23') ?? false) {
       // All integrity constraint violations
-      return AppError.validation(error.message);
+      return AppError.validation(
+        errors: {'general': [error.message]},
+      );
     }
 
-    return AppError.server(error.message);
+    return AppError.server(
+      message: error.message,
+      code: int.tryParse(error.code ?? ''),
+      originalError: error,
+    );
   }
 }

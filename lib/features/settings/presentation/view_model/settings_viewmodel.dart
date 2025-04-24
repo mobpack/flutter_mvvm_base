@@ -10,6 +10,7 @@ class SettingsViewModel extends _$SettingsViewModel {
 
   @override
   SettingsState build() {
+    _logoutUseCase = ref.read(logoutUseCaseProvider);
     return const SettingsState();
   }
 
@@ -18,7 +19,8 @@ class SettingsViewModel extends _$SettingsViewModel {
     final result = _logoutUseCase.execute();
 
     result.match(
-      (failure) => state = state.copyWith(isLoading: false, error: failure),
+      (failure) =>
+          state = state.copyWith(isLoading: false, error: failure.toString()),
       (success) => state = state.copyWith(isLoading: false),
     );
   }

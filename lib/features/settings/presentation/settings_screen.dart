@@ -58,10 +58,10 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             subtitle: const Text('Sign out of your account'),
-            onTap: settingViewModel.isLoading
+            onTap: settingViewModel.isLoading == true
                 ? null
                 : () => ref.read(settingsViewModelProvider.notifier).logout(),
-            trailing: settingViewModel.isLoading
+            trailing: settingViewModel.isLoading == true
                 ? const SizedBox(
                     width: 20,
                     height: 20,
