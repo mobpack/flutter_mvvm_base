@@ -1,4 +1,4 @@
-import 'package:flutter_mvvm_base/domain/entity/user/user_entity.dart';
+import 'package:flutter_mvvm_base/features/user/domain/user_entity.dart';
 import 'package:flutter_mvvm_base/features/auth/domain/repository/auth_repository.dart';
 import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
 import 'package:flutter_mvvm_base/shared/domain/mappers/error_mapper.dart';

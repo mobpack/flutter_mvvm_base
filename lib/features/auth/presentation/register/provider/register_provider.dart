@@ -1,6 +1,6 @@
 import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
 import 'package:flutter_mvvm_base/features/auth/usecases/register_usecase.dart';
-import 'package:flutter_mvvm_base/domain/entity/user/user_entity.dart';
+import 'package:flutter_mvvm_base/features/user/domain/user_entity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 

@@ -1,5 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_mvvm_base/domain/repository/user_repository.dart';
+import 'package:flutter_mvvm_base/features/user/domain/user_repository.dart';
 
 /// Implementation of [IUserRepository] using Supabase
 class SupabaseUserRepositoryImpl implements IUserRepository {
