@@ -153,7 +153,7 @@ class LoginScreen extends ConsumerWidget {
 
   void _onSubmit(Login viewModel, BuildContext context) {
     if (viewModel.form.valid) {
-      viewModel.login();
+      viewModel.login(context);
     } else {
       viewModel.form.markAllAsTouched();
     }

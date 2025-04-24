@@ -1,7 +1,7 @@
+import 'package:flutter_mvvm_base/domain/entity/user/user_entity.dart';
+import 'package:flutter_mvvm_base/features/auth/domain/repository/auth_repository.dart';
 import 'package:flutter_mvvm_base/shared/domain/entity/common/app_error.dart';
 import 'package:flutter_mvvm_base/shared/domain/mappers/error_mapper.dart';
-import 'package:flutter_mvvm_base/features/auth/data/repositories/auth_repository.dart';
-import 'package:flutter_mvvm_base/domain/entity/user/user_entity.dart';
 import 'package:safe_result/safe_result.dart';
 
 class GetCurrentUserUseCase {

@@ -1,6 +1,7 @@
-import 'package:flutter_mvvm_base/data/auth/supabase_auth_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/features/auth/domain/usecases/providers.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/state/login_state.dart';
-import 'package:flutter_mvvm_base/features/auth/usecases/login_usecase.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -33,7 +34,7 @@ class Login extends _$Login {
     });
   }
 
-  Future<void> login() async {
+  Future<void> login(BuildContext context) async {
     if (!form.valid) {
       form.markAllAsTouched();
       return;
@@ -44,16 +45,13 @@ class Login extends _$Login {
     final email = form.control('email').value as String;
     final password = form.control('password').value as String;
 
-    final result = await _loginUseCase.execute(email, password);
+    final result =
+        await ref.read(loginUseCaseProvider).execute(email, password);
 
     result.when(
       ok: (user) {
-        ref.read(supabaseAuthProvider);
-
-        state = state.copyWith(
-          isLoading: false,
-          user: user,
-        );
+        state = state.copyWith(isLoading: false, user: user);
+        context.go('/');
       },
       error: (error) {
         state = state.copyWith(

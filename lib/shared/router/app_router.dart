@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/data/auth/supabase_auth_provider.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/login_screen.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/register/register_screen.dart';
 import 'package:flutter_mvvm_base/features/home/presentation/my_home_page.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/settings_screen.dart';
 import 'package:flutter_mvvm_base/features/splash/presentation/splash_screen.dart';
 import 'package:flutter_mvvm_base/features/user/presentation/user_profile_screen.dart';
+import 'package:flutter_mvvm_base/shared/router/providers.dart';
 import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/example_form_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +15,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     refreshListenable: router,
-    // redirect: router._redirect,
+    redirect: router._redirect,
     routes: router._routes,
     initialLocation: '/',
     debugLogDiagnostics: true,
@@ -26,12 +26,14 @@ class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
 
   RouterNotifier(this._ref) {
-    _ref.listen(supabaseAuthProvider, (_, __) => notifyListeners());
+    _ref.listen(authStateProvider, (_, __) => notifyListeners());
   }
 
   String? _redirect(BuildContext context, GoRouterState state) {
-    final authState = _ref.read(supabaseAuthProvider);
-    final user = authState.currentUser;
+    final user = _ref.read(authStateProvider).maybeWhen(
+          data: (u) => u,
+          orElse: () => null,
+        );
     final isAuth = user != null;
 
     final isSplash = state.matchedLocation == '/splash';

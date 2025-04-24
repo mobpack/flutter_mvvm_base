@@ -212,3 +212,34 @@ Both Supabase and storage are cross-cutting services → move into `shared/data`
    ```
 4. Update all imports from `package:flutter_mvvm_base/data/storage/...` to `package:flutter_mvvm_base/shared/data/storage/...`.
 5. Delete old `lib/data/storage/` directory.
+
+## 8. Implementation Checklist
+
+- **1. Restructure feature**
+  - [x] Move `lib/data/auth/*` → `lib/features/auth/data/`
+  - [x] Move `lib/domain/repository/auth_repository.dart` → `lib/features/auth/domain/repository/`
+  - [x] Remove global `lib/data/auth` & old domain folder
+
+- **2. Create providers**
+  - [x] `features/auth/data/providers.dart`
+  - [ ] `features/auth/domain/usecases/providers.dart`
+  - [x] `features/auth/presentation/login/providers.dart`
+  - [ ] `shared/router/providers.dart` (or inline `authStateProvider`)
+
+- **3. Update `login_viewmodel.dart`**
+  - [ ] Inject usecase via `ref.read(loginUseCaseProvider)`
+  - [ ] On success: call `context.go('/')`
+
+- **4. Enable router guard**
+  - [ ] Un-comment `redirect` in `GoRouter`
+  - [ ] Use `authStateProvider` in `RouterNotifier._redirect`
+
+- **5. Testing & docs**
+  - [ ] Unit tests for `LoginUseCase`
+  - [ ] Widget tests for `LoginScreen`
+  - [ ] Update `README.md` with new feature structure
+
+- **6. CI integration**
+  - [ ] Add `flutter analyze` command in CI
+  - [ ] Add `flutter format` command in CI
+  - [ ] Add `flutter test` command in CI

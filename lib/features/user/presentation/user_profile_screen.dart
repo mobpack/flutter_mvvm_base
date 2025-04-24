@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/features/auth/providers/auth_provider.dart';
 import 'package:flutter_mvvm_base/domain/entity/user/user_entity.dart';
 import 'package:flutter_mvvm_base/features/user/presentation/provider/users_provider.dart';
 import 'package:flutter_mvvm_base/features/user/presentation/state/user_state.dart';
