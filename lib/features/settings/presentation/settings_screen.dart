@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/features/auth/presentation/widgets/logout_button.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/view_model/settings_viewmodel.dart';
 import 'package:flutter_mvvm_base/shared/theme/theme_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final packageInfo = ref.watch(packageInfoProvider);
-    final settingViewModel = ref.watch(settingsViewModelProvider);
+    ref.watch(settingsViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -55,21 +56,13 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
           const _SectionHeader(title: 'Account'),
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
             subtitle: const Text('Sign out of your account'),
-            onTap: settingViewModel.isLoading == true
-                ? null
-                : () => ref.read(settingsViewModelProvider.notifier).logout(),
-            trailing: settingViewModel.isLoading == true
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
-                : const Icon(Icons.chevron_right),
+            trailing: const LogoutButton(
+              text: 'Logout',
+              style: ButtonStyle(),
+            ),
           ),
         ],
       ),

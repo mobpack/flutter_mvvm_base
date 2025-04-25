@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/features/auth/presentation/widgets/logout_button.dart';
 import 'package:flutter_mvvm_base/features/profile/presentation/profile/state/profile_state.dart';
 import 'package:flutter_mvvm_base/features/profile/presentation/profile/viewmodels/profile_viewmodel.dart';
 import 'package:flutter_mvvm_base/features/profile/presentation/profile/widgets/profile_avatar_widget.dart';
@@ -99,6 +100,17 @@ class ProfileScreen extends ConsumerWidget {
             onTap: () {
               // Navigate to change password
             },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
+            onTap: () {},
+            trailing: const LogoutButton(
+              icon: Icons.exit_to_app,
+              text: 'Logout',
+              style: ButtonStyle(),
+            ),
           ),
         ],
       ),

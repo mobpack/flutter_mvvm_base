@@ -182,7 +182,8 @@ class LoginForgotPassword extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: () {
-          // TODO: Implement forgot password
+          // Navigate to forgot password screen
+          context.go('/forgot-password');
         },
         child: Text(
           'Forgot Password?',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
 import 'package:flutter_mvvm_base/shared/router/app_router.dart';
 import 'package:flutter_mvvm_base/shared/theme/app_theme.dart';
 import 'package:flutter_mvvm_base/shared/theme/theme_manager.dart';
@@ -6,11 +7,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class App extends ConsumerWidget {
+class App extends ConsumerStatefulWidget {
   const App({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<App> createState() => _AppState();
+}
+
+class _AppState extends ConsumerState<App> {
+  @override
+  void initState() {
+    super.initState();
+    // Check authentication state when app starts
+    Future.microtask(() {
+      ref.read(authNotifierProvider.notifier).checkAuthState();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeModeAsync = ref.watch(themeModeProvider);
     final router = ref.watch(routerProvider);
 
@@ -26,6 +41,7 @@ class App extends ConsumerWidget {
             splitScreenMode: true,
             builder: (context, child) {
               return MaterialApp.router(
+                debugShowCheckedModeBanner: false,
                 title: 'Flutter MVVM Base',
                 builder: (context, child) {
                   // First wrap with ResponsiveBreakpoints

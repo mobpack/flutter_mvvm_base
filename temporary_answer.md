@@ -1,678 +1,813 @@
-# Profile Feature Implementation Updates
+# Fixing Splash Screen Navigation with Authentication Handling
 
-## 1. Updated ProfileScreen to extend ConsumerWidget
+## Issue Analysis
 
-The ProfileScreen has been updated to extend ConsumerWidget following the pattern of LoginScreen. Here's the fixed implementation:
+The app is getting stuck at the splash screen because:
+
+1. The splash screen is currently a static widget with no navigation logic
+2. The router's redirect logic should handle navigation based on auth state, but there might be timing issues
+3. The authentication state might not be properly checked or updated when the app starts
+4. There's a disconnect between the splash screen, router, and authentication state
+
+## Solution
+
+I've implemented a solution that properly handles navigation from the splash screen to either the login screen (if unauthenticated) or the home screen (if authenticated). The key changes are:
+
+1. Convert the splash screen from a StatelessWidget to a ConsumerStatefulWidget to manage state
+2. Add explicit authentication check and navigation logic in the splash screen
+3. Ensure the auth state is properly checked and updated when the app starts
+
+## Implementation
+
+### 1. Updated Splash Screen
+
+The splash screen now actively checks authentication status and navigates accordingly:
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/viewmodels/profile_viewmodel.dart';
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/widgets/profile_avatar_widget.dart';
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/widgets/profile_info_section.dart';
-import 'package:flutter_mvvm_base/shared/widgets/base_scaffold.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/auth_state.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Screen that displays the user's profile information
-class ProfileScreen extends ConsumerWidget {
-  /// Creates a new [ProfileScreen]
-  const ProfileScreen({super.key});
+/// Splash screen that displays while checking authentication status
+/// and automatically navigates to the appropriate screen
+class SplashScreen extends ConsumerStatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(profileViewModelProvider);
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
 
-    return BaseScaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => context.push('/profile/edit'),
-          ),
-        ],
-      ),
-      body: _buildBody(context, state, ref),
-    );
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Check authentication state after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthAndNavigate();
+    });
   }
 
-  Widget _buildBody(BuildContext context, ProfileState state, WidgetRef ref) {
-    if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+  /// Checks authentication state and navigates to the appropriate screen
+  Future<void> _checkAuthAndNavigate() async {
+    // Explicitly check auth state to ensure it's up to date
+    await ref.read(authNotifierProvider.notifier).checkAuthState();
+    
+    // Get the current auth state
+    final authState = ref.read(authNotifierProvider);
+    
+    // Navigate based on auth state
+    if (mounted) {
+      if (authState is AuthStateAuthenticated) {
+        context.go('/');
+      } else if (authState is AuthStateUnauthenticated) {
+        context.go('/login');
+      }
+      // If still in initial or authenticating state, stay on splash screen
     }
+  }
 
-    if (state.error != null) {
-      return Center(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Icon(
+              Icons.flutter_dash,
+              size: 100,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 24),
             Text(
-              'Error: ${state.error}',
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
+              'Flutter MVVM Base',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Refresh the profile by rebuilding the viewmodel
-                ref.invalidate(profileViewModelProvider);
-              },
-              child: const Text('Retry'),
-            ),
+            const SizedBox(height: 24),
+            const CircularProgressIndicator(),
           ],
         ),
-      );
-    }
-
-    if (state.user == null) {
-      return const Center(
-        child: Text('User not found'),
-      );
-    }
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: ProfileAvatarWidget(
-              avatarUrl: state.user!.avatar,
-              userName: state.user!.name ?? state.user!.email,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ProfileInfoSection(user: state.user!),
-          const SizedBox(height: 24),
-          // Language selector and other settings
-          const Text(
-            'Settings',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text('Language'),
-            subtitle: Text(state.user!.language),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              // Navigate to language settings
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.security),
-            title: const Text('Change Password'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              // Navigate to change password
-            },
-          ),
-        ],
       ),
     );
   }
 }
 ```
 
-## 2. Added Profile Screen to App Router
+### 2. How It Works
 
-The ProfileScreen has been added to the app router in `lib/shared/router/app_router.dart`:
+1. When the app starts, the splash screen is displayed
+2. In the `initState` method, we schedule a check of the authentication state after the widget is built
+3. The `_checkAuthAndNavigate` method explicitly checks the auth state and navigates to the appropriate screen:
+   - If authenticated, navigate to the home screen ('/')
+   - If unauthenticated, navigate to the login screen ('/login')
+   - If still in initial or authenticating state, stay on the splash screen
+
+### 3. Benefits of This Approach
+
+1. **Explicit Navigation**: The splash screen now actively checks auth state and navigates, rather than relying solely on the router's redirect logic
+2. **Proper Timing**: By using `addPostFrameCallback`, we ensure the navigation happens after the widget is built
+3. **State Management**: By converting to a StatefulWidget, we can properly manage the state and navigation
+4. **Graceful Handling**: We check if the widget is still mounted before navigating to avoid potential issues
+
+## Additional Considerations
+
+1. The app's router is still configured to handle redirects based on authentication state, providing a fallback mechanism
+2. The auth notifier is initialized in the App class, ensuring authentication state is checked when the app starts
+3. The solution follows the MVVM architecture pattern and uses Riverpod for state management as required
+
+This implementation ensures that users are properly redirected to either the login screen or home screen based on their authentication status, fixing the issue where the app was stuck at the splash screen.
+
+### Step 1: Create Auth State Classes
+
+Create a sealed class hierarchy for authentication states:
 
 ```dart
-// Add this import at the top of the file
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/screens/profile_screen.dart';
-
-// Add this route to the _routes list in RouterNotifier class
-GoRoute(
-  path: '/profile',
-  name: 'profile',
-  builder: (context, state) => const ProfileScreen(),
-),
-```
-
-## 3. Navigation Button in Home Page
-
-The home page already has a button to navigate to the profile screen:
-
-```dart
-ElevatedButton(
-  onPressed: () => context.go('/profile'),
-  child: const Text('Go to User Profile'),
-),
-```
-
-This button is correctly implemented and will navigate to the profile screen when clicked.
-
-## 2. Profile Feature Implementation Steps
-
-### Step 1: Create Folder Structure
-
-```
-lib/features/profile/
-├── data/
-│   ├── datasources/
-│   │   └── profile_data_source.dart
-│   └── repositories/
-│       └── profile_repository_impl.dart
-├── domain/
-│   ├── repositories/
-│   │   └── profile_repository.dart
-│   └── usecases/
-│       ├── get_user_profile_usecase.dart
-│       └── update_user_profile_usecase.dart
-└── presentation/
-    ├── profile/
-    │   ├── screens/
-    │   │   └── profile_screen.dart
-    │   ├── state/
-    │   │   └── profile_state.dart
-    │   ├── viewmodels/
-    │   │   └── profile_viewmodel.dart
-    │   └── widgets/
-    │       ├── profile_avatar_widget.dart
-    │       └── profile_info_section.dart
-    └── edit_profile/
-        ├── screens/
-        │   └── edit_profile_screen.dart
-        ├── state/
-        │   └── edit_profile_state.dart
-        └── viewmodels/
-            └── edit_profile_viewmodel.dart
-```
-
-### Step 2: Implement Domain Layer
-
-#### profile_repository.dart
-```dart
-import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
-import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
-import 'package:fpdart/fpdart.dart';
-
-/// Repository interface for profile operations
-abstract class IProfileRepository {
-  /// Get user profile data
-  TaskEither<AppError, UserEntity> getUserProfile(String userId);
-  
-  /// Update user profile data
-  TaskEither<AppError, UserEntity> updateUserProfile(UserEntity user);
-  
-  /// Update user avatar
-  TaskEither<AppError, String> updateUserAvatar(String userId, String avatarPath);
-  
-  /// Update user language preference
-  TaskEither<AppError, String> updateUserLanguage(String userId, String language);
-}
-```
-
-#### get_user_profile_usecase.dart
-```dart
-import 'package:flutter_mvvm_base/features/profile/domain/repositories/profile_repository.dart';
-import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
-import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'get_user_profile_usecase.g.dart';
-
-class GetUserProfileUseCase {
-  final IProfileRepository _repository;
-  
-  GetUserProfileUseCase(this._repository);
-  
-  TaskEither<AppError, UserEntity> execute(String userId) {
-    return _repository.getUserProfile(userId);
-  }
-}
-
-@riverpod
-GetUserProfileUseCase getUserProfileUseCase(GetUserProfileUseCaseRef ref) {
-  final repository = ref.watch(profileRepositoryProvider);
-  return GetUserProfileUseCase(repository);
-}
-```
-
-#### update_user_profile_usecase.dart
-```dart
-import 'package:flutter_mvvm_base/features/profile/domain/repositories/profile_repository.dart';
-import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
-import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'update_user_profile_usecase.g.dart';
-
-class UpdateUserProfileUseCase {
-  final IProfileRepository _repository;
-  
-  UpdateUserProfileUseCase(this._repository);
-  
-  TaskEither<AppError, UserEntity> execute(UserEntity user) {
-    return _repository.updateUserProfile(user);
-  }
-}
-
-@riverpod
-UpdateUserProfileUseCase updateUserProfileUseCase(UpdateUserProfileUseCaseRef ref) {
-  final repository = ref.watch(profileRepositoryProvider);
-  return UpdateUserProfileUseCase(repository);
-}
-```
-
-### Step 3: Implement Data Layer
-
-#### profile_data_source.dart
-```dart
-import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
-
-part 'profile_data_source.g.dart';
-
-class ProfileDataSource {
-  final supabase.SupabaseClient _client;
-  
-  ProfileDataSource(this._client);
-  
-  Future<Map<String, dynamic>> getUserProfile(String userId) async {
-    final response = await _client
-        .from('users')
-        .select()
-        .eq('id', userId)
-        .single();
-    
-    return response;
-  }
-  
-  Future<Map<String, dynamic>> updateUserProfile(UserEntity user) async {
-    final response = await _client
-        .from('users')
-        .update({
-          'email': user.email,
-          'name': user.name,
-          'role': user.role,
-          'avatar': user.avatar,
-          'language': user.language,
-          'onboarding_completed': user.onboardingCompleted,
-          'updated_at': DateTime.now().toIso8601String(),
-        })
-        .eq('id', user.id)
-        .select()
-        .single();
-    
-    return response;
-  }
-  
-  Future<String> updateUserAvatar(String userId, String avatarPath) async {
-    // Upload file to storage
-    final fileName = 'avatar_$userId.jpg';
-    final storageResponse = await _client.storage
-        .from('avatars')
-        .upload(fileName, await supabase.File.fromPath(avatarPath));
-    
-    // Get public URL
-    final avatarUrl = _client.storage.from('avatars').getPublicUrl(fileName);
-    
-    // Update user record
-    await _client
-        .from('users')
-        .update({
-          'avatar': avatarUrl,
-          'updated_at': DateTime.now().toIso8601String(),
-        })
-        .eq('id', userId);
-    
-    return avatarUrl;
-  }
-  
-  Future<String> updateUserLanguage(String userId, String language) async {
-    final response = await _client
-        .from('users')
-        .update({
-          'language': language,
-          'updated_at': DateTime.now().toIso8601String(),
-        })
-        .eq('id', userId)
-        .select('language')
-        .single();
-    
-    return response['language'];
-  }
-}
-
-@riverpod
-ProfileDataSource profileDataSource(ProfileDataSourceRef ref) {
-  final supabase = ref.watch(supabaseClientProvider);
-  return ProfileDataSource(supabase);
-}
-```
-
-#### profile_repository_impl.dart
-```dart
-import 'package:flutter_mvvm_base/features/profile/data/datasources/profile_data_source.dart';
-import 'package:flutter_mvvm_base/features/profile/domain/repositories/profile_repository.dart';
-import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
-import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
-import 'package:flutter_mvvm_base/shared/domain/mappers/error_mapper.dart';
-import 'package:flutter_mvvm_base/shared/logging/log_service.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'profile_repository_impl.g.dart';
-
-class ProfileRepositoryImpl implements IProfileRepository {
-  final ProfileDataSource _dataSource;
-  
-  ProfileRepositoryImpl(this._dataSource);
-  
-  @override
-  TaskEither<AppError, UserEntity> getUserProfile(String userId) {
-    return TaskEither.tryCatch(
-      () async {
-        final userData = await _dataSource.getUserProfile(userId);
-        return UserEntity.mergeWithSupabaseData(UserEntity.empty(), userData);
-      },
-      (error, stackTrace) {
-        LogService.e('Error getting user profile', error, stackTrace);
-        return ErrorMapper.mapToAppError(error);
-      },
-    );
-  }
-  
-  @override
-  TaskEither<AppError, UserEntity> updateUserProfile(UserEntity user) {
-    return TaskEither.tryCatch(
-      () async {
-        final userData = await _dataSource.updateUserProfile(user);
-        return UserEntity.mergeWithSupabaseData(user, userData);
-      },
-      (error, stackTrace) {
-        LogService.e('Error updating user profile', error, stackTrace);
-        return ErrorMapper.mapToAppError(error);
-      },
-    );
-  }
-  
-  @override
-  TaskEither<AppError, String> updateUserAvatar(String userId, String avatarPath) {
-    return TaskEither.tryCatch(
-      () => _dataSource.updateUserAvatar(userId, avatarPath),
-      (error, stackTrace) {
-        LogService.e('Error updating user avatar', error, stackTrace);
-        return ErrorMapper.mapToAppError(error);
-      },
-    );
-  }
-  
-  @override
-  TaskEither<AppError, String> updateUserLanguage(String userId, String language) {
-    return TaskEither.tryCatch(
-      () => _dataSource.updateUserLanguage(userId, language),
-      (error, stackTrace) {
-        LogService.e('Error updating user language', error, stackTrace);
-        return ErrorMapper.mapToAppError(error);
-      },
-    );
-  }
-}
-
-@riverpod
-IProfileRepository profileRepository(ProfileRepositoryRef ref) {
-  final dataSource = ref.watch(profileDataSourceProvider);
-  return ProfileRepositoryImpl(dataSource);
-}
-```
-
-### Step 4: Implement Presentation Layer
-
-#### profile_state.dart
-```dart
-import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
+// lib/shared/auth/domain/auth_state.dart
 import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'profile_state.freezed.dart';
+part 'auth_state.freezed.dart';
 
 @freezed
-abstract class ProfileState with _$ProfileState {
-  const factory ProfileState({
-    @Default(false) bool isLoading,
-    @Default(false) bool isUpdating,
-    UserEntity? user,
-    AppError? error,
-  }) = _ProfileState;
-  
-  factory ProfileState.initial() => const ProfileState();
+class AuthState with _$AuthState {
+  const factory AuthState.initial() = AuthStateInitial;
+  const factory AuthState.authenticating() = AuthStateAuthenticating;
+  const factory AuthState.authenticated(UserEntity user) = AuthStateAuthenticated;
+  const factory AuthState.unauthenticated() = AuthStateUnauthenticated;
 }
 ```
 
-#### profile_viewmodel.dart
+### Step 2: Create Auth Notifier
+
+Create an auth notifier that implements `Listenable` to notify go_router of auth state changes:
+
 ```dart
-import 'package:flutter_mvvm_base/features/profile/domain/usecases/get_user_profile_usecase.dart';
-import 'package:flutter_mvvm_base/features/profile/domain/usecases/update_user_profile_usecase.dart';
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/state/profile_state.dart';
-import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
+// lib/shared/auth/domain/notifiers/auth_notifier.dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter_mvvm_base/features/auth/data/providers.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/auth_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+final authNotifierProvider = NotifierProvider<AuthNotifier, AuthState>(() {
+  return AuthNotifier();
+});
+
+class AuthNotifier extends Notifier<AuthState> implements Listenable {
+  VoidCallback? _routerListener;
+
+  @override
+  AuthState build() {
+    ref.listen(authStateProvider, (previous, next) {
+      next.whenOrNull(
+        data: (user) {
+          if (user != null) {
+            state = AuthState.authenticated(UserEntity.fromSupabaseUser(user));
+          } else {
+            state = const AuthState.unauthenticated();
+          }
+          _routerListener?.call();
+        },
+        error: (_, __) {
+          state = const AuthState.unauthenticated();
+          _routerListener?.call();
+        },
+      );
+    });
+
+    return const AuthState.initial();
+  }
+
+  Future<void> checkAuthState() async {
+    state = const AuthState.authenticating();
+    final authRepo = ref.read(authRepositoryProvider);
+    final result = await authRepo.getCurrentUser().run();
+
+    result.fold(
+      (error) {
+        state = const AuthState.unauthenticated();
+        _routerListener?.call();
+      },
+      (user) {
+        if (user != null) {
+          state = AuthState.authenticated(user);
+        } else {
+          state = const AuthState.unauthenticated();
+        }
+        _routerListener?.call();
+      },
+    );
+  }
+
+  Future<void> signOut() async {
+    state = const AuthState.authenticating();
+    final authRepo = ref.read(authRepositoryProvider);
+    final result = await authRepo.signOut().run();
+
+    result.fold(
+      (error) {
+        // Even if there's an error, we should consider the user logged out
+        state = const AuthState.unauthenticated();
+        _routerListener?.call();
+      },
+      (_) {
+        state = const AuthState.unauthenticated();
+        _routerListener?.call();
+      },
+    );
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    _routerListener = listener;
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    _routerListener = null;
+  }
+}
+```
+
+### Step 3: Create Route Configuration
+
+Define route paths and configurations:
+
+```dart
+// lib/shared/router/route_paths.dart
+class RoutePaths {
+  // Auth routes
+  static const splash = '/splash';
+  static const login = '/login';
+  static const register = '/register';
+  static const forgotPassword = '/forgot-password';
+
+  // Main app routes
+  static const home = '/';
+  static const profile = '/profile';
+  static const settings = '/settings';
+  static const dynamicForm = '/dynamic-form';
+
+  // Nested routes example
+  static const nestedFeature = '/nested-feature';
+  static const nestedFeatureDetail = '/nested-feature/detail';
+
+  // Error routes
+  static const notFound = '/404';
+  static const error = '/error';
+
+  // Public routes that don't require authentication
+  static const List<String> publicRoutes = [
+    splash,
+    login,
+    register,
+    forgotPassword,
+    notFound,
+    error,
+  ];
+
+  // Check if a route is public
+  static bool isPublicRoute(String route) {
+    return publicRoutes.any((path) => route.startsWith(path));
+  }
+}
+```
+
+### Step 4: Create Router Notifier
+
+Create a router notifier that handles redirects based on authentication state:
+
+```dart
+// lib/shared/router/router_notifier.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/auth_state.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
+import 'package:flutter_mvvm_base/shared/router/route_paths.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+class RouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+
+  RouterNotifier(this._ref) {
+    _ref.listen(
+      authNotifierProvider,
+      (_, __) => notifyListeners(),
+    );
+  }
+
+  String? redirect(BuildContext context, GoRouterState state) {
+    final authState = _ref.read(authNotifierProvider);
+
+    // Handle initial or authenticating states
+    if (authState is AuthStateInitial || authState is AuthStateAuthenticating) {
+      // During initial load or authentication, show splash screen
+      return RoutePaths.splash;
+    }
+
+    final isLoggedIn = authState is AuthStateAuthenticated;
+    final isGoingToPublicRoute = RoutePaths.isPublicRoute(state.matchedLocation);
+
+    // If user is not logged in and trying to access a protected route
+    if (!isLoggedIn && !isGoingToPublicRoute) {
+      return RoutePaths.login;
+    }
+
+    // If user is logged in and trying to access an auth route
+    if (isLoggedIn && isGoingToPublicRoute) {
+      // Special case for splash screen
+      if (state.matchedLocation == RoutePaths.splash) {
+        return RoutePaths.home;
+      }
+
+      // Don't redirect for error routes even when logged in
+      if (state.matchedLocation == RoutePaths.notFound ||
+          state.matchedLocation == RoutePaths.error) {
+        return null;
+      }
+
+      // Redirect to home for other auth routes
+      return RoutePaths.home;
+    }
+
+    // No redirection needed
+    return null;
+  }
+
+  List<RouteBase> get routes => [
+    GoRoute(
+      path: RoutePaths.splash,
+      builder: (context, state) => const SplashScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.login,
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.register,
+      builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.forgotPassword,
+      builder: (context, state) => const ForgotPasswordScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.notFound,
+      builder: (context, state) => const NotFoundScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.error,
+      builder: (context, state) => ErrorScreen(
+        error: state.extra as Exception?,
+      ),
+    ),
+    // Main app shell with nested navigation
+    ShellRoute(
+      builder: (context, state, child) => AppShell(child: child),
+      routes: [
+        GoRoute(
+          path: RoutePaths.home,
+          builder: (context, state) => const MyHomePage(title: 'Home'),
+        ),
+        GoRoute(
+          path: RoutePaths.profile,
+          builder: (context, state) => const ProfileScreen(),
+        ),
+        GoRoute(
+          path: RoutePaths.settings,
+          builder: (context, state) => const SettingsScreen(),
+        ),
+        GoRoute(
+          path: RoutePaths.dynamicForm,
+          builder: (context, state) => const ExampleFormScreen(),
+        ),
+        // Example of nested routes
+        GoRoute(
+          path: RoutePaths.nestedFeature,
+          builder: (context, state) => const NestedFeatureScreen(),
+          routes: [
+            GoRoute(
+              path: 'detail/:id',
+              builder: (context, state) => NestedFeatureDetailScreen(
+                id: state.pathParameters['id'] ?? '',
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ];
+}
+```
+
+### Step 5: Create Router Provider
+
+Create a go_router provider that uses the router notifier:
+
+```dart
+// lib/shared/router/app_router.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
+import 'package:flutter_mvvm_base/shared/router/router_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+final routerProvider = Provider<GoRouter>((ref) {
+  final authNotifier = ref.watch(authNotifierProvider.notifier);
+  final router = RouterNotifier(ref);
+
+  return GoRouter(
+    refreshListenable: authNotifier,
+    redirect: router.redirect,
+    routes: router.routes,
+    initialLocation: '/splash',
+    debugLogDiagnostics: true,
+    errorBuilder: (context, state) => NotFoundScreen(),
+  );
+});
+```
+
+### Step 6: Create App Shell for Nested Navigation
+
+Create an app shell widget for nested navigation:
+
+```dart
+// lib/shared/widgets/app_shell.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/shared/router/route_paths.dart';
+import 'package:go_router/go_router.dart';
+
+class AppShell extends StatelessWidget {
+  final Widget child;
+
+  const AppShell({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: child,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _calculateSelectedIndex(context),
+        onTap: (index) => _onItemTapped(index, context),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+      ),
+    );
+  }
+
+  int _calculateSelectedIndex(BuildContext context) {
+    final location = GoRouterState.of(context).matchedLocation;
+    if (location.startsWith(RoutePaths.home)) {
+      return 0;
+    } else if (location.startsWith(RoutePaths.profile)) {
+      return 1;
+    } else if (location.startsWith(RoutePaths.settings)) {
+      return 2;
+    }
+    return 0;
+  }
+
+  void _onItemTapped(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        context.go(RoutePaths.home);
+        break;
+      case 1:
+        context.go(RoutePaths.profile);
+        break;
+      case 2:
+        context.go(RoutePaths.settings);
+        break;
+    }
+  }
+}
+```
+
+### Step 7: Update Logout Use Case
+
+Update the logout use case to properly handle navigation after logout:
+
+```dart
+// lib/features/auth/presentation/viewmodels/logout_viewmodel.dart
+import 'package:flutter_mvvm_base/features/auth/usecases/logout_usecase.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'profile_viewmodel.g.dart';
+part 'logout_viewmodel.g.dart';
 
 @riverpod
-class ProfileViewModel extends _$ProfileViewModel {
-  late final GetUserProfileUseCase _getUserProfileUseCase;
-  late final UpdateUserProfileUseCase _updateUserProfileUseCase;
-  
+class LogoutViewModel extends _$LogoutViewModel {
   @override
-  ProfileState build() {
-    _getUserProfileUseCase = ref.watch(getUserProfileUseCaseProvider);
-    _updateUserProfileUseCase = ref.watch(updateUserProfileUseCaseProvider);
-    return ProfileState.initial();
+  AsyncValue<void> build() {
+    return const AsyncValue.data(null);
   }
-  
-  Future<void> loadUserProfile(String userId) async {
-    state = state.copyWith(isLoading: true, error: null);
-    
-    final result = await _getUserProfileUseCase.execute(userId).run();
-    
-    result.fold(
-      (error) => state = state.copyWith(isLoading: false, error: error),
-      (user) => state = state.copyWith(isLoading: false, user: user),
-    );
+
+  Future<void> logout() async {
+    state = const AsyncValue.loading();
+
+    try {
+      // Execute the logout use case
+      final logoutUseCase = ref.read(logoutUseCaseProvider);
+      final result = await logoutUseCase.execute().run();
+
+      result.fold(
+        (error) {
+          state = AsyncValue.error(error, StackTrace.current);
+        },
+        (_) {
+          // Explicitly notify the auth notifier about the logout
+          final authNotifier = ref.read(authNotifierProvider.notifier);
+          authNotifier.signOut();
+
+          state = const AsyncValue.data(null);
+        },
+      );
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+    }
   }
-  
-  Future<void> updateProfile(UserEntity updatedUser) async {
-    state = state.copyWith(isUpdating: true, error: null);
-    
-    final result = await _updateUserProfileUseCase.execute(updatedUser).run();
-    
-    result.fold(
-      (error) => state = state.copyWith(isUpdating: false, error: error),
-      (user) => state = state.copyWith(isUpdating: false, user: user),
+}
+```
+
+### Step 8: Update Main.dart
+
+Update the main.dart file to initialize the auth notifier:
+
+```dart
+// lib/main.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_mvvm_base/app.dart';
+import 'package:flutter_mvvm_base/features/auth/data/providers.dart' as auth_providers;
+import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
+import 'package:flutter_mvvm_base/shared/logging/log_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize logger
+  logger.init();
+  logger.info('Starting app...');
+
+  // Load environment variables
+  await dotenv.load();
+  logger.debug('Environment variables loaded');
+
+  // Configure URL strategy for web
+  usePathUrlStrategy();
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        // Override the generated authRepository provider with the actual implementation
+        authRepositoryProvider.overrideWith(
+          (ref) => ref.read(auth_providers.authRepositoryProvider),
+        ),
+      ],
+      child: const App(),
+    ),
+  );
+}
+```
+
+### Step 9: Update App.dart
+
+Update the App widget to initialize the auth state:
+
+```dart
+// lib/app.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
+import 'package:flutter_mvvm_base/shared/router/app_router.dart';
+import 'package:flutter_mvvm_base/shared/theme/app_theme.dart';
+import 'package:flutter_mvvm_base/shared/theme/theme_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:responsive_framework/responsive_framework.dart';
+
+class App extends ConsumerStatefulWidget {
+  const App({super.key});
+
+  @override
+  ConsumerState<App> createState() => _AppState();
+}
+
+class _AppState extends ConsumerState<App> {
+  @override
+  void initState() {
+    super.initState();
+    // Check authentication state when app starts
+    Future.microtask(() {
+      ref.read(authNotifierProvider.notifier).checkAuthState();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeModeAsync = ref.watch(themeModeProvider);
+    final router = ref.watch(routerProvider);
+
+    return themeModeAsync.when(
+      data: (themeMode) => ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter MVVM Base',
+            builder: (context, child) {
+              // First wrap with ResponsiveBreakpoints
+              final Widget responsiveChild = ResponsiveBreakpoints.builder(
+                breakpoints: [
+                  const Breakpoint(start: 0, end: 450, name: MOBILE),
+                  const Breakpoint(start: 451, end: 800, name: TABLET),
+                  const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+                  const Breakpoint(
+                    start: 1921,
+                    end: double.infinity,
+                    name: '4K',
+                  ),
+                ],
+                child: Builder(
+                  builder: (context) {
+                    // Apply theme after ResponsiveBreakpoints is available
+                    if (child != null) {
+                      return Theme(
+                        data: themeMode == ThemeMode.dark
+                            ? AppTheme.getDarkTheme(context)
+                            : AppTheme.getLightTheme(context),
+                        child: child,
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              );
+
+              // Apply MediaQuery to ensure proper scaling
+              final mediaQuery = MediaQuery.of(context);
+              final scale = mediaQuery.textScaler;
+
+              return MediaQuery(
+                data: mediaQuery.copyWith(
+                  textScaler: scale.clamp(
+                    minScaleFactor: 0.8,
+                    maxScaleFactor: 1.0,
+                  ),
+                ),
+                child: responsiveChild,
+              );
+            },
+            themeMode: themeMode,
+            routerConfig: router,
+          );
+        },
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, st) => MaterialApp(
+        home: Scaffold(
+          body: Center(child: Text('Theme error: $e')),
+        ),
+      ),
     );
   }
 }
 ```
 
-#### profile_screen.dart
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/state/profile_state.dart';
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/viewmodels/profile_viewmodel.dart';
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/widgets/profile_avatar_widget.dart';
-import 'package:flutter_mvvm_base/features/profile/presentation/profile/widgets/profile_info_section.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+### Step 10: Create Error and Not Found Screens
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+Create screens for error handling:
+
+```dart
+// lib/shared/widgets/error_screen.dart
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class ErrorScreen extends StatelessWidget {
+  final Exception? error;
+
+  const ErrorScreen({
+    Key? key,
+    this.error,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => Navigator.pushNamed(context, '/profile/edit'),
-          ),
-        ],
+        title: const Text('Error'),
       ),
-      body: Consumer(builder: (context, ref, _) {
-        final state = ref.watch(profileViewModelProvider);
-        
-        if (state.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        
-        if (state.error != null) {
-          return Center(
-            child: Text('Error: ${state.error!.message}'),
-          );
-        }
-        
-        if (state.user == null) {
-          return const Center(
-            child: Text('User not found'),
-          );
-        }
-        
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: ProfileAvatarWidget(
-                  avatarUrl: state.user!.avatar,
-                  userName: state.user!.name ?? state.user!.email,
-                ),
-              ),
-              const SizedBox(height: 24),
-              ProfileInfoSection(user: state.user!),
-              const SizedBox(height: 24),
-              // Language selector and other settings
-              const Text(
-                'Settings',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              ListTile(
-                leading: const Icon(Icons.language),
-                title: const Text('Language'),
-                subtitle: Text(state.user!.language),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  // Navigate to language settings
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.security),
-                title: const Text('Change Password'),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  // Navigate to change password
-                },
-              ),
-            ],
-          ),
-        );
-      }),
-    );
-  }
-}
-```
-
-#### profile_avatar_widget.dart
-```dart
-import 'package:flutter/material.dart';
-
-class ProfileAvatarWidget extends StatelessWidget {
-  final String? avatarUrl;
-  final String userName;
-  final double size;
-
-  const ProfileAvatarWidget({
-    super.key,
-    this.avatarUrl,
-    required this.userName,
-    this.size = 100,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (avatarUrl != null && avatarUrl!.isNotEmpty)
-          CircleAvatar(
-            radius: size / 2,
-            backgroundImage: NetworkImage(avatarUrl!),
-          )
-        else
-          CircleAvatar(
-            radius: size / 2,
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: Text(
-              _getInitials(userName),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'An error occurred',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-                fontSize: size / 3,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-        const SizedBox(height: 16),
-        Text(
-          userName,
-          style: Theme.of(context).textTheme.titleLarge,
-          textAlign: TextAlign.center,
+            const SizedBox(height: 8),
+            if (error != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Text(
+                  error.toString(),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.go('/'),
+              child: const Text('Go to Home'),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
+}
 
-  String _getInitials(String name) {
-    if (name.isEmpty) return '';
-    
-    final nameParts = name.split(' ');
-    if (nameParts.length > 1) {
-      return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
-    } else {
-      return name[0].toUpperCase();
-    }
+// lib/shared/widgets/not_found_screen.dart
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class NotFoundScreen extends StatelessWidget {
+  const NotFoundScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Page Not Found'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.search_off,
+              color: Colors.grey,
+              size: 60,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              '404',
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Page Not Found',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.go('/'),
+              child: const Text('Go to Home'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 ```
 
-### Step 5: Register Routes and Providers
-
-Add the following to your app's router configuration:
-
-```dart
-// In your router configuration file
-GoRoute(
-  path: '/profile',
-  builder: (context, state) => const ProfileScreen(),
-),
-GoRoute(
-  path: '/profile/edit',
-  builder: (context, state) => const EditProfileScreen(),
-),
-```
-
-## 3. Testing the Profile Feature
-
-Create tests for each layer:
-
-1. **Repository Tests**: Test the repository implementation with mocked data source
-2. **Use Case Tests**: Test the use cases with mocked repository
-3. **ViewModel Tests**: Test the view models with mocked use cases
-4. **Widget Tests**: Test the UI components
-5. **Integration Tests**: Test the feature end-to-end
-
-## 4. Next Steps
-
-1. Implement the Edit Profile screen and functionality
-2. Add language settings screen
-3. Implement avatar upload functionality with image picker
-4. Add change password functionality
-5. Implement proper error handling and user feedback
-6. Add analytics tracking for profile actions
-
+This implementation provides a robust routing solution with proper authentication handling, nested navigation, deep linking support, and error handling. The key improvement is the creation of a dedicated `AuthNotifier` that implements `Listenable` to properly notify go_router of authentication state changes, ensuring users are redirected to the login screen immediately after logout.
