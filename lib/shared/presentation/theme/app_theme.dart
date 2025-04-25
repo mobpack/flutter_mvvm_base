@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/shared/theme/app_text_theme.dart';
+import 'package:flutter_mvvm_base/shared/presentation/theme/app_text_theme.dart';
 
 var defaultBorderRadius = BorderRadius.circular(8);
 

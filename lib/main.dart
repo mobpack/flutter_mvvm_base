@@ -4,7 +4,7 @@ import 'package:flutter_mvvm_base/app.dart';
 import 'package:flutter_mvvm_base/features/auth/data/providers.dart'
     as auth_providers;
 import 'package:flutter_mvvm_base/features/auth/usecases/login_use_case.dart';
-import 'package:flutter_mvvm_base/shared/logging/log_service.dart';
+import 'package:flutter_mvvm_base/shared/core/logging/log_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 

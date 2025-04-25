@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/widgets/logout_button.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/view_model/settings_viewmodel.dart';
-import 'package:flutter_mvvm_base/shared/theme/theme_manager.dart';
+import 'package:flutter_mvvm_base/shared/presentation/theme/theme_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

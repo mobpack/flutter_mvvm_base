@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/shared/auth/domain/auth_state.dart';
-import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/auth/domain/auth_state.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/auth/providers/auth_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -27,10 +27,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> _checkAuthAndNavigate() async {
     // Explicitly check auth state to ensure it's up to date
     await ref.read(authNotifierProvider.notifier).checkAuthState();
-    
+
     // Get the current auth state
     final authState = ref.read(authNotifierProvider);
-    
+
     // Navigate based on auth state
     if (mounted) {
       if (authState is AuthStateAuthenticated) {

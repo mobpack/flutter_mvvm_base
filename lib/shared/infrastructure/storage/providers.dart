@@ -1,5 +1,5 @@
-import 'package:flutter_mvvm_base/shared/data/storage/storage_repository_impl.dart';
 import 'package:flutter_mvvm_base/shared/domain/repository/storage_repository.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/storage/storage_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

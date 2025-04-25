@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/shared/data/storage/providers.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/storage/providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class ThemeManager extends AsyncNotifier<ThemeMode> {

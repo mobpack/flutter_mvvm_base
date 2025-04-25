@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/viewmodel/login_viewmodel.dart';
-import 'package:flutter_mvvm_base/shared/presentation/widgets/error_banner.dart';
-import 'package:flutter_mvvm_base/shared/widgets/base_scaffold.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/feedback/error_banner.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/layouts/base_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_mvvm_base/features/auth/data/providers.dart';
-import 'package:flutter_mvvm_base/shared/auth/domain/auth_state.dart';
 import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
-import 'package:flutter_mvvm_base/shared/router/providers.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/auth/domain/auth_state.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/auth/providers/auth_state_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_notifier.g.dart';
@@ -10,7 +10,7 @@ part 'auth_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class AuthNotifier extends _$AuthNotifier implements Listenable {
   VoidCallback? _routerListener;
-  
+
   @override
   AuthState build() {
     ref.listen(authStateProvider, (previous, next) {
@@ -29,7 +29,7 @@ class AuthNotifier extends _$AuthNotifier implements Listenable {
         },
       );
     });
-    
+
     return const AuthState.initial();
   }
 
@@ -37,7 +37,7 @@ class AuthNotifier extends _$AuthNotifier implements Listenable {
     state = const AuthState.authenticating();
     final authRepo = ref.read(authRepositoryProvider);
     final result = await authRepo.getCurrentUser().run();
-    
+
     result.fold(
       (error) {
         state = const AuthState.unauthenticated();
@@ -58,7 +58,7 @@ class AuthNotifier extends _$AuthNotifier implements Listenable {
     state = const AuthState.authenticating();
     final authRepo = ref.read(authRepositoryProvider);
     final result = await authRepo.signOut().run();
-    
+
     result.fold(
       (error) {
         // Even if there's an error, we should consider the user logged out

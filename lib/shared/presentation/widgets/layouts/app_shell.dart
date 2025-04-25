@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/shared/router/route_paths.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/navigation/routes/route_paths.dart';
 import 'package:go_router/go_router.dart';
 
 /// App shell that provides a common layout for all authenticated screens

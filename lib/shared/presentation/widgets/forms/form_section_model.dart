@@ -1,4 +1,4 @@
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_field_model.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/forms/form_field_model.dart';
 
 /// Represents a section within a dynamic form
 class FormSectionModel {

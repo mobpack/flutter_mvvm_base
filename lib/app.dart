@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
-import 'package:flutter_mvvm_base/shared/router/app_router.dart';
-import 'package:flutter_mvvm_base/shared/theme/app_theme.dart';
-import 'package:flutter_mvvm_base/shared/theme/theme_manager.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/auth/providers/auth_notifier.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/navigation/services/app_router.dart';
+import 'package:flutter_mvvm_base/shared/presentation/theme/app_theme.dart';
+import 'package:flutter_mvvm_base/shared/presentation/theme/theme_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_schema_model.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/forms/form_schema_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Repository for fetching form schemas from Supabase

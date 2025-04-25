@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/dynamic_form_field.dart';
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_field_model.dart';
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_schema_model.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/forms/dynamic_form_field.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/forms/form_field_model.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/forms/form_schema_model.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 /// A dynamic form builder widget that creates a form based on a JSON schema

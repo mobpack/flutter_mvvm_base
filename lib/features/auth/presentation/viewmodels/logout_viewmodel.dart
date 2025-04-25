@@ -1,5 +1,5 @@
 import 'package:flutter_mvvm_base/features/auth/usecases/logout_usecase.dart';
-import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/auth/providers/auth_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'logout_viewmodel.g.dart';

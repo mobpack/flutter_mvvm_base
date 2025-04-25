@@ -1,9 +1,9 @@
 import 'package:flutter_mvvm_base/features/profile/data/datasources/profile_data_source.dart';
 import 'package:flutter_mvvm_base/features/profile/domain/repositories/profile_repository.dart';
+import 'package:flutter_mvvm_base/shared/core/logging/log_service.dart';
 import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
 import 'package:flutter_mvvm_base/shared/domain/entities/user/user_entity.dart';
 import 'package:flutter_mvvm_base/shared/domain/mappers/error_mapper.dart';
-import 'package:flutter_mvvm_base/shared/logging/log_service.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -1,4 +1,4 @@
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_section_model.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/forms/form_section_model.dart';
 
 /// Model class representing the entire form schema
 class FormSchemaModel {

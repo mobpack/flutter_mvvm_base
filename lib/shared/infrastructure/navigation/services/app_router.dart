@@ -1,6 +1,6 @@
-import 'package:flutter_mvvm_base/shared/auth/domain/notifiers/auth_notifier.dart';
-import 'package:flutter_mvvm_base/shared/router/router_notifier.dart';
-import 'package:flutter_mvvm_base/shared/widgets/not_found_screen.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/auth/providers/auth_notifier.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/navigation/services/router_notifier.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/screens/not_found_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
