@@ -8,7 +8,8 @@
     "subosito",
     "SUPABASE",
     "usecase",
-    "viewmodel"
+    "viewmodel",
+    "viewmodels"
   ],
   "dart.flutterSdkPath": ".fvm/versions/3.29.1"
 }

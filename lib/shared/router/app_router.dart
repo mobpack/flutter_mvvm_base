@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/login/login_screen.dart';
 import 'package:flutter_mvvm_base/features/auth/presentation/register/register_screen.dart';
 import 'package:flutter_mvvm_base/features/home/presentation/my_home_page.dart';
+import 'package:flutter_mvvm_base/features/profile/presentation/profile/screens/profile_screen.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/settings_screen.dart';
 import 'package:flutter_mvvm_base/features/splash/presentation/splash_screen.dart';
 import 'package:flutter_mvvm_base/shared/router/providers.dart';
@@ -74,6 +75,11 @@ class RouterNotifier extends ChangeNotifier {
           path: '/',
           name: 'home',
           builder: (context, state) => const MyHomePage(title: 'Home'),
+        ),
+        GoRoute(
+          path: '/profile',
+          name: 'profile',
+          builder: (context, state) => const ProfileScreen(),
         ),
         GoRoute(
           path: '/settings',
