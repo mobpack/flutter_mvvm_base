@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/features/auth/presentation/register/provider/register_provider.dart';
-import 'package:flutter_mvvm_base/shared/widgets/base_scaffold.dart';
+import 'package:flutter_mvvm_base/shared/presentation/widgets/layouts/base_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -10,15 +9,7 @@ class RegisterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(registerViewModelProvider);
-    final viewModel = ref.read(registerViewModelProvider.notifier);
-
     // Redirect to home if already authenticated
-    if (state.user != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.go('/');
-      });
-    }
 
     return BaseScaffold(
       appBar: AppBar(
@@ -27,7 +18,25 @@ class RegisterScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: ReactiveForm(
-          formGroup: viewModel.form,
+          formGroup: FormGroup({
+            'email': FormControl<String>(
+              validators: [
+                Validators.required,
+                Validators.email,
+              ],
+            ),
+            'password': FormControl<String>(
+              validators: [
+                Validators.required,
+                Validators.minLength(6),
+              ],
+            ),
+            'confirmPassword': FormControl<String>(
+              validators: [
+                Validators.required,
+              ],
+            ),
+          }),
           child: Stack(
             children: [
               SingleChildScrollView(
@@ -44,22 +53,6 @@ class RegisterScreen extends ConsumerWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(height: 32),
-                    if (state.error != null)
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.errorContainer,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          state.error!.message,
-                          style: TextStyle(
-                            color:
-                                Theme.of(context).colorScheme.onErrorContainer,
-                          ),
-                        ),
-                      ),
                     ReactiveTextField<String>(
                       formControlName: 'email',
                       decoration: const InputDecoration(
@@ -107,26 +100,16 @@ class RegisterScreen extends ConsumerWidget {
                             'Passwords must match',
                       },
                       textInputAction: TextInputAction.done,
-                      onSubmitted: (_) => _onSubmit(viewModel, context),
+                      onSubmitted: (_) {},
                     ),
                     const SizedBox(height: 24),
                     ReactiveFormConsumer(
                       builder: (context, form, child) {
                         return FilledButton(
-                          onPressed: state.isLoading || !form.valid
-                              ? null
-                              : () => _onSubmit(viewModel, context),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: state.isLoading
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Text('REGISTER'),
+                          onPressed: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Text('REGISTER'),
                           ),
                         );
                       },
@@ -150,12 +133,5 @@ class RegisterScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _onSubmit(
-    RegisterViewModel viewModel,
-    BuildContext context,
-  ) async {
-    await viewModel.register();
   }
 }

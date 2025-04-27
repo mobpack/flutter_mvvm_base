@@ -2,7 +2,7 @@
 
 1. Follow Dart and Flutter best practices for code style, readability, and maintainability.
 2. Use the MVVM architecture pattern for all new features.
-3. Ensure all widgets are stateless unless state is required. Prefer StateNotifier/Cubit/ChangeNotifier for state management.
+3. Ensure all widgets are stateless unless state is required. Prefer Riverpod for state management.
 4. Use dependency injection for all services and repositories.
 5. Write unit, widget, and integration tests for all business logic and UI components. Achieve high test coverage.
 6. Use null safety and avoid nullable types unless necessary.
@@ -10,9 +10,12 @@
 8. Avoid long files and methods; break code into small, reusable widgets and functions.
 9. Document all public APIs, classes, and complex logic with DartDoc comments.
 10. Do not commit commented-out code or unused imports.
-11. Use async/await for asynchronous code; avoid callbacks where possible.
+11. Prefer fpdart for functional programming. Use freezed for data classes and value objects.
 12. Prefer const constructors and widgets for performance.
 13. Do not modify or commit files in the /widgetbook directory as part of main app development.
 14. Run flutter analyze and flutter format before every commit.
 15. Review all code through pull requests; require at least one peer review before merging.
 16. Use environment variables for secrets and configuration; never hardcode sensitive data.
+17. Use freezed for data classes and value objects. Use riverpod_annotation for state management.
+18. Use ConsumerWidget for screens and widgets that require state management.
+19. Use GoRouter for navigation and routing.

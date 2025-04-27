@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/app.dart';
+import 'package:flutter_mvvm_base/features/auth/presentation/widgets/logout_button.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/view_model/settings_viewmodel.dart';
+import 'package:flutter_mvvm_base/shared/presentation/theme/theme_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -13,9 +14,9 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeProvider);
+    final themeMode = ref.watch(themeModeProvider);
     final packageInfo = ref.watch(packageInfoProvider);
-    final settingViewModel = ref.watch(settingsViewModelProvider);
+    ref.watch(settingsViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,11 +30,15 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.dark_mode),
             title: const Text('Dark Mode'),
             subtitle: Text(
-              themeMode == ThemeMode.system
-                  ? 'System'
-                  : themeMode == ThemeMode.dark
-                      ? 'On'
-                      : 'Off',
+              themeMode.when(
+                data: (mode) => mode == ThemeMode.system
+                    ? 'System'
+                    : mode == ThemeMode.dark
+                        ? 'On'
+                        : 'Off',
+                loading: () => 'Loading...',
+                error: (error, stackTrace) => 'Error: $error',
+              ),
             ),
             onTap: () => _showThemePicker(context, ref),
           ),
@@ -51,21 +56,13 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
           const _SectionHeader(title: 'Account'),
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
             subtitle: const Text('Sign out of your account'),
-            onTap: settingViewModel.isLoading
-                ? null
-                : () => ref.read(settingsViewModelProvider.notifier).logout(),
-            trailing: settingViewModel.isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
-                : const Icon(Icons.chevron_right),
+            trailing: const LogoutButton(
+              text: 'Logout',
+              style: ButtonStyle(),
+            ),
           ),
         ],
       ),
@@ -73,6 +70,8 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showThemePicker(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(themeModeProvider.notifier);
+
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
@@ -84,9 +83,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: const Text('System'),
                 leading: const Icon(Icons.brightness_auto),
                 onTap: () {
-                  ref
-                      .read(themeProvider.notifier)
-                      .setThemeMode(ThemeMode.system);
+                  notifier.setThemeMode(ThemeMode.system);
                   Navigator.pop(context);
                 },
               ),
@@ -94,9 +91,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: const Text('Light'),
                 leading: const Icon(Icons.light_mode),
                 onTap: () {
-                  ref
-                      .read(themeProvider.notifier)
-                      .setThemeMode(ThemeMode.light);
+                  notifier.setThemeMode(ThemeMode.light);
                   Navigator.pop(context);
                 },
               ),
@@ -104,7 +99,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: const Text('Dark'),
                 leading: const Icon(Icons.dark_mode),
                 onTap: () {
-                  ref.read(themeProvider.notifier).setThemeMode(ThemeMode.dark);
+                  notifier.setThemeMode(ThemeMode.dark);
                   Navigator.pop(context);
                 },
               ),

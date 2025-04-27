@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_field_model.dart';
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/form_schema_model.dart';
-import 'package:flutter_mvvm_base/shared/widgets/dynamic_form/dynamic_form_builder.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
+import 'package:flutter_mvvm_base/shared/presentation/widgets/forms/forms.dart';
 import 'package:logger/logger.dart';
 
 /// Helper method to get an example form schema
@@ -12,46 +10,52 @@ FormSchemaModel _getExampleFormSchema() {
     id: 'example-form',
     title: 'Contact Information',
     description: 'Please fill out your contact information below.',
-    fields: [
-      FormFieldModel(
-        id: 'name',
-        type: FormFieldType.text,
-        label: 'Full Name',
-        placeholder: 'Enter your full name',
-        isRequired: true,
-        icon: Icons.person_outline,
-        validationRules: {'minLength': 2, 'maxLength': 50},
-      ),
-      FormFieldModel(
-        id: 'email',
-        type: FormFieldType.email,
-        label: 'Email Address',
-        placeholder: 'Enter your email address',
-        isRequired: true,
-        icon: Icons.email_outlined,
-        helperText: 'We\'ll never share your email with anyone else.',
-      ),
-      FormFieldModel(
-        id: 'phone',
-        type: FormFieldType.text,
-        label: 'Phone Number',
-        placeholder: 'Enter your phone number',
-        isRequired: false,
-        icon: Icons.phone_outlined,
-        validationRules: {'pattern': r'^\+?[0-9]{10,15}$'},
-        errorMessage: 'Please enter a valid phone number',
-      ),
-      FormFieldModel(
-        id: 'password',
-        type: FormFieldType.password,
-        label: 'Password',
-        placeholder: 'Enter your password',
-        isRequired: true,
-        validationRules: {'minLength': 8},
-        helperText: 'Password must be at least 8 characters long',
+    sections: [
+      FormSectionModel(
+        id: 'personal-info',
+        title: 'Personal Information',
+        description: 'Please provide your personal information.',
+        fields: [
+          FormFieldModel(
+            id: 'name',
+            type: FormFieldType.text,
+            label: 'Full Name',
+            placeholder: 'Enter your full name',
+            isRequired: true,
+            icon: Icons.person_outline,
+            validationRules: {'minLength': 2, 'maxLength': 50},
+          ),
+          FormFieldModel(
+            id: 'email',
+            type: FormFieldType.email,
+            label: 'Email Address',
+            placeholder: 'Enter your email address',
+            isRequired: true,
+            icon: Icons.email_outlined,
+            helperText: 'We\'ll never share your email with anyone else.',
+          ),
+          FormFieldModel(
+            id: 'phone',
+            type: FormFieldType.text,
+            label: 'Phone Number',
+            placeholder: 'Enter your phone number',
+            isRequired: false,
+            icon: Icons.phone_outlined,
+            validationRules: {'pattern': r'^\+?[0-9]{10,15}$'},
+            errorMessage: 'Please enter a valid phone number',
+          ),
+          FormFieldModel(
+            id: 'password',
+            type: FormFieldType.password,
+            label: 'Password',
+            placeholder: 'Enter your password',
+            isRequired: true,
+            validationRules: {'minLength': 8},
+            helperText: 'Password must be at least 8 characters long',
+          ),
+        ],
       ),
     ],
-    submitEndpoint: '/api/submit-form',
   );
 }
 

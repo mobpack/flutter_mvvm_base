@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_mvvm_base/app.dart';
-import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/shared/utils/log_service.dart';
+import 'package:flutter_mvvm_base/features/auth/data/providers.dart'
+    as auth_providers;
+import 'package:flutter_mvvm_base/features/auth/usecases/login_use_case.dart';
+import 'package:flutter_mvvm_base/shared/core/logging/log_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,13 +19,17 @@ Future<void> main() async {
   await dotenv.load();
   logger.debug('Environment variables loaded');
 
-  // Setup service locator
-  await setupServiceLocator();
-  logger.debug('Service locator initialized');
+  usePathUrlStrategy();
 
   runApp(
-    const ProviderScope(
-      child: App(),
+    ProviderScope(
+      overrides: [
+        // Override the generated authRepository provider with the actual implementation
+        authRepositoryProvider.overrideWith(
+          (ref) => ref.read(auth_providers.authRepositoryProvider),
+        ),
+      ],
+      child: const App(),
     ),
   );
 }

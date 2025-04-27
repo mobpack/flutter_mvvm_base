@@ -1,7 +1,6 @@
-import 'package:flutter_mvvm_base/di/service_locator.dart';
-import 'package:flutter_mvvm_base/features/auth/domain/usecases/auth/logout_usecase.dart';
-import 'package:flutter_mvvm_base/features/auth/providers/auth_provider.dart';
+import 'package:flutter_mvvm_base/features/auth/usecases/logout_usecase.dart';
 import 'package:flutter_mvvm_base/features/settings/presentation/state/settings_state.dart';
+import 'package:flutter_mvvm_base/shared/infrastructure/auth/providers/auth_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'settings_viewmodel.g.dart';
@@ -10,28 +9,25 @@ part 'settings_viewmodel.g.dart';
 class SettingsViewModel extends _$SettingsViewModel {
   late final LogoutUseCase _logoutUseCase;
 
-  SettingsViewModel({
-    LogoutUseCase? logoutUseCase,
-  }) : _logoutUseCase = logoutUseCase ?? getIt<LogoutUseCase>();
-
   @override
   SettingsState build() {
+    _logoutUseCase = ref.read(logoutUseCaseProvider);
     return const SettingsState();
   }
 
   Future<void> logout() async {
-    if (state.isLoading) return; // prevent multiple calls while loading
-
     state = state.copyWith(isLoading: true);
-    final result = await _logoutUseCase.execute();
+    final result = await _logoutUseCase.execute().run();
 
-    result.when(
-      ok: (_) {
-        // Refresh auth state to trigger router redirect
-        ref.read(authProvider.notifier).refresh();
+    result.fold(
+      (failure) {
+        state = state.copyWith(isLoading: false, error: failure.toString());
       },
-      error: (_) {
-        // Handle error if needed
+      (_) {
+        // Explicitly notify the auth notifier about the logout
+        final authNotifier = ref.read(authNotifierProvider.notifier);
+        authNotifier.signOut();
+
         state = state.copyWith(isLoading: false);
       },
     );
