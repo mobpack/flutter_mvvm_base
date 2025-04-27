@@ -20,7 +20,7 @@ jobs:
         run: flutter pub get
 
       - name: Analyze code
-        run: flutter analyze --exclude=widgetbook/**
+        run: flutter analyze
 
       - name: Check code formatting
         run: |
