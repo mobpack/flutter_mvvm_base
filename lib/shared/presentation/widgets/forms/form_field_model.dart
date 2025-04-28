@@ -19,34 +19,34 @@ enum FormFieldType {
 class FormFieldModel {
   /// Unique identifier for the field
   final String id;
-  
+
   /// The type of form field
   final FormFieldType type;
-  
+
   /// Label to display for the field
   final String label;
-  
+
   /// Optional placeholder text
   final String? placeholder;
-  
+
   /// Whether the field is required
   final bool isRequired;
-  
+
   /// Default value for the field
   final dynamic defaultValue;
-  
+
   /// Additional validation rules as a map
   final Map<String, dynamic>? validationRules;
-  
+
   /// Additional properties specific to field types (e.g., min/max for sliders)
   final Map<String, dynamic>? properties;
-  
+
   /// Optional helper text to display below the field
   final String? helperText;
-  
+
   /// Optional error message to override default validation messages
   final String? errorMessage;
-  
+
   /// Optional icon to display with the field
   final IconData? icon;
 
@@ -77,7 +77,8 @@ class FormFieldModel {
       properties: json['properties'] as Map<String, dynamic>?,
       helperText: json['helperText'] as String?,
       errorMessage: json['errorMessage'] as String?,
-      icon: json['icon'] != null ? _parseIconData(json['icon'] as String) : null,
+      icon:
+          json['icon'] != null ? _parseIconData(json['icon'] as String) : null,
     );
   }
 
@@ -105,7 +106,7 @@ class FormFieldModel {
       'radio': Icons.radio_button_unchecked,
       'slider': Icons.linear_scale,
     };
-    
+
     return iconMap[iconStr];
   }
 

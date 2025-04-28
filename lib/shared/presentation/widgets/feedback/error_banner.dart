@@ -5,13 +5,13 @@ import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
 class ErrorBanner extends StatelessWidget {
   final AppError error;
   final VoidCallback? onDismiss;
-  
+
   const ErrorBanner({
     required this.error,
     this.onDismiss,
     super.key,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,8 +36,8 @@ class ErrorBanner extends StatelessWidget {
             child: Text(
               error.userMessage,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onErrorContainer,
-              ),
+                    color: Theme.of(context).colorScheme.onErrorContainer,
+                  ),
             ),
           ),
           if (onDismiss != null)
@@ -50,10 +50,10 @@ class ErrorBanner extends StatelessWidget {
       ),
     );
   }
-  
+
   /// Returns an appropriate icon based on the error type
   IconData _getIconForError(AppError error) {
-    return switch(error) {
+    return switch (error) {
       NetworkError() => Icons.signal_wifi_off,
       AuthError() => Icons.lock_outline,
       ValidationError() => Icons.error_outline,

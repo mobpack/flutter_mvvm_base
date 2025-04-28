@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 /// A screen to display when an error occurs during navigation
 class ErrorScreen extends StatelessWidget {
   final Exception? error;
-  
+
   const ErrorScreen({
     super.key,
     this.error,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 class ProfileAvatarWidget extends StatelessWidget {
   /// URL to the user's avatar image
   final String? avatarUrl;
-  
+
   /// User's name or display text
   final String userName;
-  
+
   /// Size of the avatar in pixels
   final double size;
 
   /// Creates a new [ProfileAvatarWidget]
   const ProfileAvatarWidget({
-    required this.userName, super.key,
+    required this.userName,
+    super.key,
     this.avatarUrl,
     this.size = 100,
   });
@@ -53,7 +54,7 @@ class ProfileAvatarWidget extends StatelessWidget {
   /// Extracts initials from a name (e.g., "John Doe" -> "JD")
   String _getInitials(String name) {
     if (name.isEmpty) return '';
-    
+
     final nameParts = name.split(' ');
     if (nameParts.length > 1) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();

@@ -26,7 +26,8 @@ class UpdateUserProfileUseCase {
 /// Provider for [UpdateUserProfileUseCase]
 @riverpod
 UpdateUserProfileUseCase updateUserProfileUseCase(
-    UpdateUserProfileUseCaseRef ref,) {
+  UpdateUserProfileUseCaseRef ref,
+) {
   final repository = ref.watch(profileRepositoryProvider);
   return UpdateUserProfileUseCase(repository);
 }
