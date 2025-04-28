@@ -11,17 +11,17 @@ abstract class ProfileState with _$ProfileState {
   const factory ProfileState({
     /// Whether the profile is currently loading
     @Default(false) bool isLoading,
-    
+
     /// Whether the profile is currently being updated
     @Default(false) bool isUpdating,
-    
+
     /// The user entity containing profile data
     UserEntity? user,
-    
+
     /// Any error that occurred during loading or updating
     AppError? error,
   }) = _ProfileState;
-  
+
   /// Creates an initial empty state
   factory ProfileState.initial() => const ProfileState();
 }

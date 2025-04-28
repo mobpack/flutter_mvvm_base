@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 /// A screen to display when a route is not found (404)
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

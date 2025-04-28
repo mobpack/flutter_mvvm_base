@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'app_error.freezed.dart';
 
 /// A unified error model for the application.
-/// 
+///
 /// This sealed class represents all possible error types in the application.
 /// Using Dart 3's sealed classes allows for exhaustive pattern matching.
 @freezed
@@ -51,15 +51,13 @@ extension AppErrorX on AppError {
   /// Returns a user-friendly message for the error
   String get userMessage {
     return switch (this) {
-      NetworkError(message: final msg) => 
+      NetworkError(message: final msg) =>
         'Unable to connect to the server. $msg',
-      AuthError(message: final msg) => 
-        'Authentication error: $msg',
-      ValidationError(errors: final errors) => 
+      AuthError(message: final msg) => 'Authentication error: $msg',
+      ValidationError(errors: final errors) =>
         errors.values.expand((e) => e).join(', '),
-      ServerError(message: final msg) => 
-        'Server error: $msg',
-      UnexpectedError(message: final msg) => 
+      ServerError(message: final msg) => 'Server error: $msg',
+      UnexpectedError(message: final msg) =>
         'An unexpected error occurred: $msg',
     };
   }

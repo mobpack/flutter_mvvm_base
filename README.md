@@ -57,7 +57,7 @@ lib/
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/flutter_mvvm_base.git
+   git clone https://github.com/mobpack/flutter_mvvm_base.git
    cd flutter_mvvm_base
    ```
 

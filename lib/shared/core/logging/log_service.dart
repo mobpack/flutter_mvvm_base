@@ -71,13 +71,25 @@ class LogService {
     switch (appError) {
       case NetworkError(message: final msg, originalError: final err):
         warning('Network error: $msg', err);
-      case AuthError(message: final msg, code: final code, originalError: final err):
+      case AuthError(
+          message: final msg,
+          code: final code,
+          originalError: final err
+        ):
         warning('Auth error: $msg (code: $code)', err);
       case ValidationError(errors: final errors):
         info('Validation error: $errors');
-      case ServerError(message: final msg, code: final code, originalError: final err):
+      case ServerError(
+          message: final msg,
+          code: final code,
+          originalError: final err
+        ):
         error('Server error: $msg (code: $code)', err);
-      case UnexpectedError(message: final msg, stackTrace: final stack, originalError: final err):
+      case UnexpectedError(
+          message: final msg,
+          stackTrace: final stack,
+          originalError: final err
+        ):
         error('Unexpected error: $msg', err, stack);
     }
   }

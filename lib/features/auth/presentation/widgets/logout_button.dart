@@ -7,25 +7,25 @@ class LogoutButton extends ConsumerWidget {
   final String? text;
   final IconData? icon;
   final ButtonStyle? style;
-  
+
   const LogoutButton({
     super.key,
     this.text,
     this.icon,
     this.style,
   });
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final logoutState = ref.watch(logoutViewModelProvider);
-    
+
     return logoutState.when(
       data: (_) => _buildButton(context, ref),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stackTrace) => _buildErrorButton(context, error, ref),
     );
   }
-  
+
   Widget _buildButton(BuildContext context, WidgetRef ref) {
     if (text != null && icon != null) {
       return ElevatedButton.icon(
@@ -48,7 +48,7 @@ class LogoutButton extends ConsumerWidget {
       );
     }
   }
-  
+
   Widget _buildErrorButton(BuildContext context, Object error, WidgetRef ref) {
     return ElevatedButton(
       onPressed: () => _handleLogout(ref),
@@ -58,7 +58,7 @@ class LogoutButton extends ConsumerWidget {
       child: const Text('Retry Logout'),
     );
   }
-  
+
   void _handleLogout(WidgetRef ref) {
     ref.read(logoutViewModelProvider.notifier).logout();
   }

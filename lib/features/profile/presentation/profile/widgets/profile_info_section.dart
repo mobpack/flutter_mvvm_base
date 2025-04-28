@@ -23,19 +23,19 @@ class ProfileInfoSection extends StatelessWidget {
         if (user.name != null) _buildInfoItem(context, 'Name', user.name!),
         _buildInfoItem(context, 'Role', user.role),
         _buildInfoItem(
-          context, 
-          'Onboarding Completed', 
+          context,
+          'Onboarding Completed',
           user.onboardingCompleted ? 'Yes' : 'No',
         ),
         _buildInfoItem(
-          context, 
-          'Email Confirmed', 
+          context,
+          'Email Confirmed',
           user.emailConfirmed ? 'Yes' : 'No',
         ),
         if (user.createdAt != null)
           _buildInfoItem(
-            context, 
-            'Member Since', 
+            context,
+            'Member Since',
             _formatDate(user.createdAt!),
           ),
       ],

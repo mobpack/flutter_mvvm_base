@@ -5,13 +5,13 @@ import 'package:flutter_mvvm_base/shared/domain/common/app_error.dart';
 class ErrorView extends StatelessWidget {
   final AppError error;
   final VoidCallback? onRetry;
-  
+
   const ErrorView({
     required this.error,
     this.onRetry,
     super.key,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -31,7 +31,7 @@ class ErrorView extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            if (error.isRecoverable && onRetry != null) ...[  
+            if (error.isRecoverable && onRetry != null) ...[
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: onRetry,
@@ -44,10 +44,10 @@ class ErrorView extends StatelessWidget {
       ),
     );
   }
-  
+
   /// Returns an appropriate icon based on the error type
   IconData _getIconForError(AppError error) {
-    return switch(error) {
+    return switch (error) {
       NetworkError() => Icons.signal_wifi_off,
       AuthError() => Icons.lock_outline,
       ValidationError() => Icons.error_outline,
