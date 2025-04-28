@@ -27,4 +27,4 @@ jobs:
 
       - name: Check code formatting
         run: |
-          find . -type d -name widgetbook -prune -o -name "*.dart" -print | xargs flutter format --set-exit-if-changed
+          find . -type d -name widgetbook -prune -o -name "*.dart" -print | xargs dart format --set-exit-if-changed
